@@ -3,6 +3,7 @@
 import { Consent, ConsentProvision } from 'fhir/r5.js';
 import { v4 as uuidv4 } from 'uuid';
 import { InformationCategorySetting } from './information_category_setting.js';
+import { DataSegmentationModuleRegistry } from './data_segmentation_module_registry.js';
 
 export class ConsentTemplate {
 
@@ -44,7 +45,12 @@ export class ConsentTemplate {
   }
 
 
-  static templateProvision(): ConsentProvision {
+  /**
+   * Create a template provision, optionally using purposes from a module registry.
+   * @param moduleRegistry - Optional module registry to get purposes from
+   * @returns A template ConsentProvision
+   */
+  static templateProvision(moduleRegistry?: DataSegmentationModuleRegistry): ConsentProvision {
     let cp = {
       id: uuidv4(),
       actor: [{
@@ -69,7 +75,20 @@ export class ConsentTemplate {
         ]
       }],
       // securityLabel: [],
-      purpose: [
+      purpose: [] as any[]
+    }
+    
+    if (moduleRegistry) {
+      // Use purposes from enabled modules in registry
+      const purposes = moduleRegistry.getAllPurposes();
+      cp.purpose = purposes.map(p => ({
+        system: p.system,
+        code: p.act_code,
+        display: p.description
+      }));
+    } else {
+      // Use static defaults for backward compatibility
+      cp.purpose = [
         {
           "system": InformationCategorySetting.ACT_CODE_SYSTEM,
           "code": InformationCategorySetting.ACT_CODE_RESEARCH_CODE,
@@ -80,10 +99,9 @@ export class ConsentTemplate {
           "code": InformationCategorySetting.ACT_CODE_TREATMENT_CODE,
           "display": InformationCategorySetting.ACT_CODE_TREATMENT_DISPLAY
         }
-      ]
+      ];
     }
-    // let s = new ConsentCategorySettings();
-    // s.updateConsentProvision(cp);
+    
     return cp;
   }
 

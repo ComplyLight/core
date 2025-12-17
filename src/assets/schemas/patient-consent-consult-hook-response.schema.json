@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://schemas.asushares.com/fhir/r5/patient-consent-consult-hook-response.schema.json",
+  "$id": "https://schemas.complylight.com/fhir/r5/patient-consent-consult-hook-response.schema.json",
   "title": "Patient Consent Consult Hook Response",
   "description": "Patient Consent Consult Hook Response",
   "definitions": {

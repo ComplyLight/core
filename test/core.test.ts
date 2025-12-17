@@ -2,7 +2,7 @@ import { Coding } from '../src/model/coding.js';
 import { CodeSetCoding } from '../src/model/code_set_coding.js';
 import { CodeSet } from '../src/model/code_set.js';
 import { ConsentDecision } from '../src/model/consent_decision.js';
-import { Rule } from '../src/model/rule.js';
+import { Binding } from '../src/model/binding.js';
 import { Permissions } from '../src/model/permissions.js';
 import { ConsentExtension } from '../src/model/consent_extension.js';
 
@@ -117,50 +117,50 @@ describe('Model Classes', () => {
         });
     });
 
-    describe('Rule', () => {
+    describe('Binding', () => {
         test('should create instance with default values', () => {
-            const rule = new Rule();
-            expect(rule.id).toBe('');
-            expect(rule.basis).toBeInstanceOf(Coding);
-            expect(rule.labels).toEqual([]);
-            expect(rule.codeSets).toEqual([]);
+            const binding = new Binding();
+            expect(binding.id).toBe('');
+            expect(binding.basis).toBeInstanceOf(Coding);
+            expect(binding.labels).toEqual([]);
+            expect(binding.codeSets).toEqual([]);
         });
 
         test('should allow setting properties', () => {
-            const rule = new Rule();
-            rule.id = 'test-rule-123';
+            const binding = new Binding();
+            binding.id = 'test-binding-123';
             
             const basis = new Coding();
             basis.system = 'http://test.system';
             basis.code = 'TEST';
-            rule.basis = basis;
+            binding.basis = basis;
             
             const label = new Coding();
             label.system = 'http://label.system';
             label.code = 'LABEL';
-            rule.labels = [label];
+            binding.labels = [label];
             
             const codeSet = new CodeSet();
             codeSet.groupID = 'test-group';
-            rule.codeSets = [codeSet];
+            binding.codeSets = [codeSet];
 
-            expect(rule.id).toBe('test-rule-123');
-            expect(rule.basis.code).toBe('TEST');
-            expect(rule.labels).toHaveLength(1);
-            expect(rule.codeSets).toHaveLength(1);
+            expect(binding.id).toBe('test-binding-123');
+            expect(binding.basis.code).toBe('TEST');
+            expect(binding.labels).toHaveLength(1);
+            expect(binding.codeSets).toHaveLength(1);
         });
 
-        test('fromTemplate should create rule with generated ID and template values', () => {
-            const rule = Rule.fromTemplate();
+        test('fromTemplate should create binding with generated ID and template values', () => {
+            const binding = Binding.fromTemplate();
             
-            expect(rule.id).toMatch(/^rule-[a-f0-9]{6}$/);
-            expect(rule.basis).toBeInstanceOf(Coding);
-            expect(rule.labels).toHaveLength(1);
-            expect(rule.codeSets).toHaveLength(1);
+            expect(binding.id).toMatch(/^binding-[a-f0-9]{6}$/);
+            expect(binding.basis).toBeInstanceOf(Coding);
+            expect(binding.labels).toHaveLength(1);
+            expect(binding.codeSets).toHaveLength(1);
         });
 
         test('basisFromTemplate should return Coding with correct values', () => {
-            const basis = Rule.basisFromTemplate();
+            const basis = Binding.basisFromTemplate();
             
             expect(basis.system).toBe('http://terminology.hl7.org/CodeSystem/v3-ActCode');
             expect(basis.code).toBe('42CFRPart2');
@@ -168,7 +168,7 @@ describe('Model Classes', () => {
         });
 
         test('labelFromTemplate should return Coding with correct values', () => {
-            const label = Rule.labelFromTemplate();
+            const label = Binding.labelFromTemplate();
             
             expect(label.system).toBe('http://terminology.hl7.org/CodeSystem/v3-ActCode');
             expect(label.code).toBe('X');
@@ -176,14 +176,14 @@ describe('Model Classes', () => {
         });
 
         test('codeSetFromTemplate should return CodeSet with generated groupID', () => {
-            const codeSet = Rule.codeSetFromTemplate();
+            const codeSet = Binding.codeSetFromTemplate();
             
             expect(codeSet.groupID).toMatch(/^Group-[a-f0-9-]{36}$/);
             expect(codeSet.codes).toEqual([]);
         });
 
         test('allCodeObjects should return flattened array of codes from all codeSets', () => {
-            const rule = new Rule();
+            const binding = new Binding();
             
             const codeSet1 = new CodeSet();
             const coding1 = new CodeSetCoding();
@@ -197,9 +197,9 @@ describe('Model Classes', () => {
             coding3.code = 'code3';
             codeSet2.codes = [coding3];
             
-            rule.codeSets = [codeSet1, codeSet2];
+            binding.codeSets = [codeSet1, codeSet2];
             
-            const allCodes = rule.allCodeObjects();
+            const allCodes = binding.allCodeObjects();
             
             expect(allCodes).toHaveLength(3);
             expect(allCodes[0].code).toBe('code1');
@@ -208,8 +208,8 @@ describe('Model Classes', () => {
         });
 
         test('allCodeObjects should return empty array when no codeSets', () => {
-            const rule = new Rule();
-            const allCodes = rule.allCodeObjects();
+            const binding = new Binding();
+            const allCodes = binding.allCodeObjects();
             expect(allCodes).toEqual([]);
         });
     });

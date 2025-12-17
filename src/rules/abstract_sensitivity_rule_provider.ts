@@ -2,8 +2,7 @@
 
 import { Ajv } from 'ajv';
 import { Coding } from 'fhir/r5.js';
-import { Rule } from '../model/rule.js';
-import { RulesFile } from '../model/rules_file.js';
+import { Binding } from '../model/binding.js';
 
 export abstract class AbstractSensitivityRuleProvider {
 
@@ -12,8 +11,7 @@ export abstract class AbstractSensitivityRuleProvider {
         code: "REDACT"
     }
 
-    rulesFileJSON: RulesFile = new RulesFile();// = this.loadRulesFile();
-    rules: Rule[] = []; // = this.initializeRules();
+    rules: Binding[] = []; // = this.initializeRules();
 
     AJV = new Ajv();
     validator = this.rulesSchema() ? this.AJV.compile(this.rulesSchema()) : null;
@@ -25,15 +23,16 @@ export abstract class AbstractSensitivityRuleProvider {
 
     abstract rulesSchema(): any;
 
-    abstract loadRulesFile(): RulesFile;
+    abstract loadBindings(): Binding[];
 
 
     reinitialize() {
-        this.rulesFileJSON = this.loadRulesFile();
-        this.rules = this.rulesFileJSON.rules.map((n: any) => { return Object.assign(new Rule, n) });
-        console.log('Loaded rules:');
+        const bindingsArray = this.loadBindings();
+        this.rules = bindingsArray.map((n: any) => { return Object.assign(new Binding, n) });
+        console.info('Loaded rules:');
         this.rules.forEach(r => {
-            console.log(`\t${r.id} : (${r.allCodeObjects().length} total codes, Basis: ${r.basis.display}, Labels: ${r.labels.map(l => { return l.code + ' - ' + l.display }).join(', ')})`);
+            const categoryPurpose = r.category && r.purpose ? ` [Category: ${r.category}, Purpose: ${r.purpose}]` : '';
+            console.info(`\t${r.id} : (${r.allCodeObjects().length} total codes, Basis: ${r.basis.display}, Labels: ${r.labels.map(l => { return l.code + ' - ' + l.display }).join(', ')})${categoryPurpose}`);
         });
     }
 
@@ -41,7 +40,7 @@ export abstract class AbstractSensitivityRuleProvider {
     validateRuleFile(data: string) {
         const ajv = new Ajv();
         if (!this.validator) {
-            console.log('No validator found. All validations will pass without errors.');
+            console.info('No validator found. All validations will pass without errors.');
             return null;
         }
         else if (this.validator(data)) {
@@ -52,7 +51,7 @@ export abstract class AbstractSensitivityRuleProvider {
     }
 
 
-    applicableRulesFor(codings: Coding[], allRules: Rule[], threshold: number): Rule[] {
+    applicableRulesFor(codings: Coding[], allRules: Binding[], threshold: number): Binding[] {
         let rules = allRules.filter(rule => {
             return rule.allCodeObjects().some(coding => {
                 let found = false;
@@ -60,26 +59,17 @@ export abstract class AbstractSensitivityRuleProvider {
                     if (coding.system == codings[i].system && coding.code == codings[i].code) {
                         if (coding.confidence >= threshold) {
                             found = true;
-                            // console.debug("Rule sensitivity match on: " + coding.system + ' ' + coding.code);
                             break;
-                        } else {
-                            // console.debug(`Rule sensitivity match SKIPPED due to low confidence ` +
-                            //     `(confidence ${coding.confidence} < configured threshold ${threshold}) for: ` +
-                            //     coding.system + ' ' + coding.code);
                         }
                     }
                 }
                 return found;
             })
         })
-        // console.log('Applicable rules (' + rules.length + '): ');
-        // rules.forEach(r => {
-        //     console.log("\tRule ID: " + r.id);
-        // });
         return rules;
     }
 
-    applicableRulesForAll(codings: Coding[], threshold: number): Rule[] {
+    applicableRulesForAll(codings: Coding[], threshold: number): Binding[] {
         return this.applicableRulesFor(codings, this.rules, threshold);
     }
 

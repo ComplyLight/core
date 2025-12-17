@@ -1,0 +1,115 @@
+{
+    "$schema": "../../src/assets/schemas/data-segmentation-module.schema.json",
+    "id": "test-deep-hierarchy",
+    "name": "Test Deep Hierarchy Module",
+    "version": "1.0.0",
+    "description": "Test module with 4-level deep category hierarchy",
+    "enabled": true,
+    "categories": [
+        {
+            "code": "ROOT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Root Category",
+            "description": "Top-level root category"
+        },
+        {
+            "code": "LEVEL1",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Level 1 Category",
+            "description": "First level category",
+            "parent": "ROOT"
+        },
+        {
+            "code": "LEVEL2",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Level 2 Category",
+            "description": "Second level category",
+            "parent": "LEVEL1"
+        },
+        {
+            "code": "LEVEL3",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Level 3 Category",
+            "description": "Third level category",
+            "parent": "LEVEL2"
+        },
+        {
+            "code": "LEVEL4",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Level 4 Category",
+            "description": "Fourth level category",
+            "parent": "LEVEL3"
+        }
+    ],
+    "purposes": [
+        {
+            "code": "RESEARCH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Research",
+            "description": "Scientific and academic research intended to benefit others."
+        }
+    ],
+    "rules": {
+        "bindings": [
+            {
+                "id": "test-binding-level4",
+                "category": "LEVEL4",
+                "purpose": "RESEARCH",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "LEVEL4",
+                        "display": "Level 4 Category"
+                    }
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "level4-test",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "999999999",
+                                "confidence": 1.0
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "test-binding-level2",
+                "category": "LEVEL2",
+                "purpose": "RESEARCH",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "LEVEL2",
+                        "display": "Level 2 Category"
+                    }
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "level2-test",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "888888888",
+                                "confidence": 1.0
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+

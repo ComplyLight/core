@@ -10,13 +10,19 @@ import { DenyCard } from "../cds/cards/deny_card.js";
 import { NoConsentCard } from "../cds/cards/no_consent_card.js";
 import { PermitCard } from "../cds/cards/permit_card.js";
 import { ConsentCategorySettings, ConsentDecision, InformationCategorySetting } from "../index.js";
+import { DataSegmentationModuleRegistry } from "../core/data_segmentation_module_registry.js";
+import { DataSegmentationModule } from "../core/data_segmentation_module.js";
 
 export abstract class AbstractDataSharingEngine {
+
+    protected moduleRegistry: DataSegmentationModuleRegistry;
 
     constructor(public ruleProvider: AbstractSensitivityRuleProvider,
         public threshold: number,
         public redaction_enabled: boolean,
-        public create_audit_event: boolean) {
+        public create_audit_event: boolean,
+        moduleRegistry: DataSegmentationModuleRegistry) {
+        this.moduleRegistry = moduleRegistry;
     }
 
 
@@ -25,7 +31,7 @@ export abstract class AbstractDataSharingEngine {
         const filtered = this.filterForApplicableConsents(consents);
         let card: Card = new NoConsentCard();
         if (filtered.length > 0) {
-            console.log('Evaluating ' + filtered.length + ' applicable consents.');
+            console.info('Evaluating ' + filtered.length + ' applicable consents.');
 
             let results = [];
             for (let i = 0; i < filtered.length; i++) {
@@ -33,21 +39,17 @@ export abstract class AbstractDataSharingEngine {
                 results.push(this.consentDecision(consent));
 
             }
-            // console.log('CONSENT INDIVIDUAL DECISIONS: ');
-            // console.log(results);
 
             let permits = results.filter(sr => { return sr == 'permit' });
             let denies = results.filter(sr => { return sr == 'deny' });
             // Any deny decision should trump all permit decisions.
             if (denies.length > 0) {
-                // console.log('Using DenyCard template.');
                 card = new DenyCard();
             } else if (permits.length > 0) {
-                // console.log('Using PermitCard template.');
                 card = new PermitCard();
             }
         } else {
-            console.log("No applicable consent documents.");
+            console.info("No applicable consent documents.");
         }
 
         // Add copy of request content to response, if present.
@@ -101,22 +103,33 @@ export abstract class AbstractDataSharingEngine {
                             e.resource.meta.security = [];
                         }
                         srp_rules.forEach(r => {
-                            // console.log("LABELS: ");
-                            // console.log(r);
                             let ob = { id: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION, parameters: { codes: r.labels } }
                             // r.labels.map(l => l.);
                             consentExtension.obligations.push(ob);
-                            // console.log(`Adding label to meta security for resource: ${e.resource?.resourceType}/${r.id}`);
-                            // console.log(r.labels);
                             r.labels.forEach(l => {
-                                e.resource?.meta?.security?.push(l);
+                                // Deduplicate: check if identical label already exists
+                                if (!this.isDuplicateSecurityLabel(e.resource.meta.security, l)) {
+                                    e.resource?.meta?.security?.push(l);
+                                }
                             });
                         });
-                        // console.log(codings);
                     }
                 });
             }
         }
+    }
+
+    /**
+     * Check if a security label is a duplicate of an existing one.
+     * @param existing - Array of existing security labels
+     * @param candidate - Candidate label to check
+     * @returns True if duplicate (same system + code), false otherwise
+     */
+    isDuplicateSecurityLabel(existing: Coding[], candidate: Coding): boolean {
+        return existing.some(existingLabel => 
+            existingLabel.system === candidate.system && 
+            existingLabel.code === candidate.code
+        );
     }
 
     // redactFromLabels(card: Card) {
@@ -154,15 +167,14 @@ export abstract class AbstractDataSharingEngine {
         return sharable;
     }
 
-    shouldShareFromPurposes(r: FhirResource, p: ConsentProvision, c: ConsentCategorySettings): boolean {
+    shouldShareFromPurposes(r: FhirResource, p: ConsentProvision): boolean {
         let sharable = false;
-        // const tmp = new ConsentCategorySettings()
-        if (c.treatment.enabled) {
-            sharable ||= this.sharableForPurpose(p, c.treatment);
-        }
-        if (c.research.enabled) {
-            sharable ||= this.sharableForPurpose(p, c.research);
-        }
+        const enabledPurposes = this.moduleRegistry.getAllPurposes();
+        enabledPurposes.forEach(purpose => {
+            if (purpose.enabled && this.sharableForPurpose(p, purpose)) {
+                sharable = true;
+            }
+        });
         return sharable;
     }
 
@@ -258,7 +270,7 @@ export abstract class AbstractDataSharingEngine {
     }
 
 
-    computeConsentDecisionsForResources(labeledResources: FhirResource[], consent: Consent, sharingContextSettings: ConsentCategorySettings): { [key: string]: Card } {
+    computeConsentDecisionsForResources(labeledResources: FhirResource[], consent: Consent): { [key: string]: Card } {
         let consentDecisions: { [key: string]: Card } = {};
         let shouldShare = false;
         if (consent?.provision) {
@@ -266,10 +278,11 @@ export abstract class AbstractDataSharingEngine {
                 // Making a root denial by default, if undefined, as a reasonable default is necessary.
                 consent.decision = 'deny';
             }
-            const tmpCategorySettings = new ConsentCategorySettings();
+            // Create temporary module instance per provision to track enabled categories/purposes
+            const tmpModule = DataSegmentationModule.createFromRegistry(this.moduleRegistry);
 
             consent.provision.forEach((p) => {
-                tmpCategorySettings.loadAllFromConsentProvision(p);
+                tmpModule.loadAllFromConsentProvision(p);
                 labeledResources.forEach((r) => {
                     // Check if resource has labels (meta.security)
                     if (r.meta?.security && r.meta.security.length > 0) {
@@ -279,17 +292,16 @@ export abstract class AbstractDataSharingEngine {
                         extension.obligations.push({
                             id: { system: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.system, code: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.code },
                             parameters: {
-                                codes: tmpCategorySettings.allCategories()
+                                codes: tmpModule.allCategories()
                                     .filter(c => includeEnabled ? !c.enabled : c.enabled) // Only categories relevant to the consent
                                     .map(c => { return { system: c.system, code: c.act_code } }) // Make it a valid Coding
                             }
                         })
-                        shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p, sharingContextSettings);
+                        shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p);
                     } else {
                         // Unlabeled resource: follow consent's base decision AND consider purpose of use
-                        shouldShare = consent?.decision === 'permit' && this.shouldShareFromPurposes(r, p, sharingContextSettings);
+                        shouldShare = consent?.decision === 'permit' && this.shouldShareFromPurposes(r, p);
                     }
-                    // console.log('Decision:', r.resourceType, r.id, shouldShare);
                     if (shouldShare) {
                         consentDecisions[r.id!] = new PermitCard();
                     } else {
@@ -311,8 +323,8 @@ export abstract class AbstractDataSharingEngine {
     }
 
 
-    exportDecisionsForCsv(categorySettings: ConsentCategorySettings, resources: FhirResource[], decisions: { [key: string]: Card }) {
-        let data = this.exportCsvData(categorySettings, resources, decisions);
+    exportDecisionsForCsv(resources: FhirResource[], decisions: { [key: string]: Card }) {
+        let data = this.exportCsvData(resources, decisions);
         // let csvContent = 'data:text/csv;charset=utf-8,';
         let csvContent = '';
         data.forEach((row) => {
@@ -322,13 +334,14 @@ export abstract class AbstractDataSharingEngine {
         return csvContent;
     }
 
-    exportCsvData(categorySettings: ConsentCategorySettings, labeledResources: FhirResource[], decisions: { [key: string]: Card; }) {
+    exportCsvData(labeledResources: FhirResource[], decisions: { [key: string]: Card; }) {
         let data = [['Resource Type', 'Resource ID', 'Labels', 'Decision']];
         labeledResources.forEach((r) => {
             let labels: string[] = [];
             r.meta?.security?.forEach((s) => {
                 if (s.code) {
-                    let label = categorySettings.categoryForCode(s.code)?.name || (s.code + ' (Unknown)');
+                    const category = this.moduleRegistry.findCategoryByCode(s.code);
+                    let label = category?.name || (s.code + ' (Unknown)');
                     labels.push(label);
                 } else {
                     labels.push('(Unknown)');

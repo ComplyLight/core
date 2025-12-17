@@ -1,0 +1,99 @@
+{
+    "$schema": "../../src/assets/schemas/data-segmentation-module.schema.json",
+    "id": "test-flat",
+    "name": "Test Flat Module",
+    "version": "1.0.0",
+    "description": "Test module with flat category structure (no hierarchy)",
+    "enabled": true,
+    "categories": [
+        {
+            "code": "TEST1",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Test Category 1",
+            "description": "First test category"
+        },
+        {
+            "code": "TEST2",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Test Category 2",
+            "description": "Second test category"
+        }
+    ],
+    "purposes": [
+        {
+            "code": "HIPAAConsentCD",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Treatment",
+            "description": "For the purposes of providing or supporting care."
+        },
+        {
+            "code": "RESEARCH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Research",
+            "description": "Scientific and academic research intended to benefit others."
+        }
+    ],
+    "rules": {
+        "bindings": [
+            {
+                "id": "test-binding-test1",
+                "category": "TEST1",
+                "purpose": "HIPAAConsentCD",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "TEST1",
+                        "display": "Test Category 1"
+                    }
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "test1-group",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "123456789",
+                                "confidence": 1.0
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "test-binding-test2",
+                "category": "TEST2",
+                "purpose": "RESEARCH",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "TEST2",
+                        "display": "Test Category 2"
+                    }
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "test2-group",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "987654321",
+                                "confidence": 1.0
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+

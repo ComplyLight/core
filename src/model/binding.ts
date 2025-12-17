@@ -4,19 +4,21 @@ import * as uuid from 'uuid';
 import { CodeSet } from './code_set.js';
 import { Coding } from './coding.js';
 
-export class Rule {
+export class Binding {
 
     id: string = '';
     basis: Coding = new Coding();
     labels: Coding[] = [];
     codeSets: CodeSet[] = [];
+    category?: string; // Reference to category code (required in bindings)
+    purpose?: string; // Reference to purpose code (required in bindings)
 
     static fromTemplate() {
-        const r = new Rule();
-        r.id = 'rule-' + uuid.v4().substring(0, 6);
-        r.basis = Rule.basisFromTemplate();
-        r.labels.push(Rule.labelFromTemplate());
-        r.codeSets.push(Rule.codeSetFromTemplate());
+        const r = new Binding();
+        r.id = 'binding-' + uuid.v4().substring(0, 6);
+        r.basis = Binding.basisFromTemplate();
+        r.labels.push(Binding.labelFromTemplate());
+        r.codeSets.push(Binding.codeSetFromTemplate());
         return r;
     }
 
@@ -48,3 +50,4 @@ export class Rule {
     }
 
 }
+

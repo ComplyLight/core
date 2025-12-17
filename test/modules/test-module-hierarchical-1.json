@@ -1,0 +1,144 @@
+{
+    "$schema": "../../src/assets/schemas/data-segmentation-module.schema.json",
+    "id": "test-hierarchical-1",
+    "name": "Test Hierarchical Module 1",
+    "version": "1.0.0",
+    "description": "Test module with 3-level category hierarchy",
+    "enabled": true,
+    "categories": [
+        {
+            "code": "HEALTH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Health Information",
+            "description": "Root category for all health-related information"
+        },
+        {
+            "code": "MENTAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Mental Health",
+            "description": "Mental health information",
+            "parent": "HEALTH"
+        },
+        {
+            "code": "ANXIETY",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Anxiety Disorders",
+            "description": "Anxiety-related conditions",
+            "parent": "MENTAL"
+        },
+        {
+            "code": "DEPRESSION",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Depression",
+            "description": "Depressive disorders",
+            "parent": "MENTAL"
+        },
+        {
+            "code": "PHYSICAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Physical Health",
+            "description": "Physical health information",
+            "parent": "HEALTH"
+        }
+    ],
+    "purposes": [
+        {
+            "code": "HIPAAConsentCD",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Treatment",
+            "description": "For the purposes of providing or supporting care."
+        }
+    ],
+    "rules": {
+        "bindings": [
+            {
+                "id": "test-binding-anxiety",
+                "category": "ANXIETY",
+                "purpose": "HIPAAConsentCD",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "ANXIETY",
+                        "display": "Anxiety Disorders"
+                    }
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "anxiety-test",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "48694002",
+                                "confidence": 1.0
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "test-binding-depression",
+                "category": "DEPRESSION",
+                "purpose": "HIPAAConsentCD",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "DEPRESSION",
+                        "display": "Depression"
+                    }
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "depression-test",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "35489007",
+                                "confidence": 1.0
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "test-binding-mental",
+                "category": "MENTAL",
+                "purpose": "HIPAAConsentCD",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "MENTAL",
+                        "display": "Mental Health"
+                    }
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "mental-test",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "13746004",
+                                "confidence": 1.0
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+

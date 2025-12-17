@@ -10,7 +10,6 @@ export abstract class AbstractDataSharingCDSHookValidator {
     responseValidator = AbstractDataSharingCDSHookValidator.AJV.compile(this.responseSchema());
 
     constructor() {
-        // console.log(AbstractCDSHookValidator.RESPONSE_SCHEMA_FILE);
     }
 
     // FIXME Race condition here! Needs a mutex or similar.

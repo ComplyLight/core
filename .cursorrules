@@ -1,8 +1,12 @@
-# ComplyLight Core - Cursor Rules
+# ComplyLight Core
 
-## Project Overview
-This is a TypeScript library published as an ESM (ES Module) package. The codebase emphasizes clean, reusable, and extensible patterns suitable for a healthcare consent management system.
+This "core" library operates on FHIR and healthcare data to provide information sensitivity classification, security labeling, and redaction capabilities to higher-level applications in a modular and extensible manner.
 
+As a TypeScript library published as an ESM (ES Module) package, the codebase emphasizes clean, reusable, and extensible patterns suitable for healthcare consent management, enforcement, and data exchange systems. It must be usable both within the browser as well as Node-based applications. Two such critical applications and checked out in:
+
+- ../cds - NodeJS API exposing capabilities of the core library via CDS-Hooks and REST APIs
+- ../portal - User-facing SPA browser webapp written in Angular.
+ 
 DO NOT AUTOMATICALLY COMMIT CHANGES TO GIT!
 
 ## TypeScript & ESM Module Standards

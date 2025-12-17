@@ -108,7 +108,7 @@ export class ConsentCategorySettings {
                 }
             });
             if (!found) {
-                console.log("ENABLING CATEGORY: " + category.act_code);
+                console.info("ENABLING CATEGORY: " + category.act_code);
                 provision?.securityLabel!.push({ code: category.act_code, system: category.system, display: category.description });
             }
         } else { // disabled
@@ -118,7 +118,7 @@ export class ConsentCategorySettings {
                     foundAt = i;
                 }
                 if (foundAt >= 0) {
-                    console.log("DISABLING CATEGORY: " + category.act_code);
+                    console.info("DISABLING CATEGORY: " + category.act_code);
                     provision?.securityLabel?.splice(foundAt, 1);
                 }
             }
@@ -134,7 +134,7 @@ export class ConsentCategorySettings {
                 }
             });
             if (!found) {
-                console.log("ENABLING PURPOSE: " + category.act_code);
+                console.info("ENABLING PURPOSE: " + category.act_code);
                 provision?.purpose?.push({ code: category.act_code, system: category.system, display: category.description });
             }
         } else { // disabled
@@ -144,7 +144,7 @@ export class ConsentCategorySettings {
                     foundAt = i;
                 }
                 if (foundAt >= 0) {
-                    console.log("DISABLING PURPOSE: " + category.act_code);
+                    console.info("DISABLING PURPOSE: " + category.act_code);
                     provision?.purpose?.splice(foundAt, 1);
                 }
             }

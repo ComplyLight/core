@@ -1,0 +1,197 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://schemas.complylight.com/fhir/r5/data-segmentation-module.schema.json",
+    "title": "Data Segmentation Module",
+    "description": "Schema for defining data segmentation modules with categories, purposes, hierarchical concept trees, and sensitivity rule bindings",
+    "type": "object",
+    "required": [
+        "id",
+        "name",
+        "version",
+        "description",
+        "enabled",
+        "categories",
+        "purposes"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique identifier for the module"
+        },
+        "name": {
+            "type": "string",
+            "description": "Human-readable name of the module"
+        },
+        "version": {
+            "type": "string",
+            "description": "Version identifier for the module"
+        },
+        "description": {
+            "type": "string",
+            "description": "Description of the module's purpose and scope"
+        },
+        "enabled": {
+            "type": "boolean",
+            "description": "Whether the module is enabled by default",
+            "default": true
+        },
+        "categories": {
+            "type": "array",
+            "description": "Array of information category definitions",
+            "items": {
+                "$ref": "#/definitions/categoryOrPurpose"
+            }
+        },
+        "purposes": {
+            "type": "array",
+            "description": "Array of purpose of use definitions",
+            "items": {
+                "$ref": "#/definitions/categoryOrPurpose"
+            }
+        },
+        "rules": {
+            "type": "object",
+            "description": "Optional rules object containing sensitivity rule bindings",
+            "properties": {
+                "bindings": {
+                    "type": "array",
+                    "description": "Array of rule bindings that link sensitivity rules to categories and purposes",
+                    "items": {
+                        "$ref": "#/definitions/binding"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "categoryOrPurpose": {
+            "type": "object",
+            "required": [
+                "code",
+                "name"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The code value (e.g., 'SUD', 'MENCAT')"
+                },
+                "system": {
+                    "type": "string",
+                    "description": "The code system URI",
+                    "default": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Human-readable name of the category or purpose"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the category or purpose"
+                },
+                "parent": {
+                    "type": "string",
+                    "description": "Optional parent category code for hierarchical concept trees. Supports unlimited depth."
+                }
+            }
+        },
+        "coding": {
+            "type": "object",
+            "required": [
+                "system",
+                "code"
+            ],
+            "properties": {
+                "system": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "display": {
+                    "type": "string"
+                }
+            }
+        },
+        "codeSetCoding": {
+            "type": "object",
+            "required": [
+                "system",
+                "code",
+                "confidence"
+            ],
+            "properties": {
+                "system": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "confidence": {
+                    "type": "number"
+                }
+            }
+        },
+        "codeSet": {
+            "type": "object",
+            "required": [
+                "groupID",
+                "codes"
+            ],
+            "properties": {
+                "groupID": {
+                    "type": "string"
+                },
+                "codes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/codeSetCoding"
+                    }
+                }
+            }
+        },
+        "binding": {
+            "type": "object",
+            "required": [
+                "id",
+                "basis",
+                "labels",
+                "codeSets",
+                "category",
+                "purpose"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique identifier for the binding"
+                },
+                "basis": {
+                    "$ref": "#/definitions/coding",
+                    "description": "The basis coding for this binding"
+                },
+                "labels": {
+                    "type": "array",
+                    "description": "Array of label codings",
+                    "items": {
+                        "$ref": "#/definitions/coding"
+                    }
+                },
+                "codeSets": {
+                    "type": "array",
+                    "description": "Array of code sets",
+                    "items": {
+                        "$ref": "#/definitions/codeSet"
+                    }
+                },
+                "category": {
+                    "type": "string",
+                    "description": "Required reference to a category code from the categories array"
+                },
+                "purpose": {
+                    "type": "string",
+                    "description": "Required reference to a purpose code from the purposes array"
+                }
+            }
+        }
+    }
+}
+

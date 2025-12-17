@@ -1,0 +1,100 @@
+{
+    "$schema": "../../src/assets/schemas/data-segmentation-module.schema.json",
+    "id": "test-hierarchical-2",
+    "name": "Test Hierarchical Module 2",
+    "version": "1.0.0",
+    "description": "Test module with overlapping categories for priority testing",
+    "enabled": true,
+    "categories": [
+        {
+            "code": "SENSITIVE",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Sensitive Information",
+            "description": "Root category for sensitive data"
+        },
+        {
+            "code": "SUD",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use",
+            "description": "Substance use information",
+            "parent": "SENSITIVE"
+        },
+        {
+            "code": "DEMO",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Demographics",
+            "description": "Demographic information"
+        }
+    ],
+    "purposes": [
+        {
+            "code": "RESEARCH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Research",
+            "description": "Scientific and academic research intended to benefit others."
+        }
+    ],
+    "rules": {
+        "bindings": [
+            {
+                "id": "test-binding-sud",
+                "category": "SUD",
+                "purpose": "RESEARCH",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "Substance Use"
+                    }
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "sud-test",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "203203",
+                                "confidence": 1.0
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "test-binding-demo",
+                "category": "DEMO",
+                "purpose": "RESEARCH",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "DEMO",
+                        "display": "Demographics"
+                    }
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "demo-test",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "LP133912-8",
+                                "confidence": 1.0
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+

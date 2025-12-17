@@ -1,6 +1,6 @@
 {
   "name": "@complylight/core",
-  "version": "3.1.2",
+  "version": "4.0.1",
   "description": "ComplyLight common class and CLI utility library.",
   "type": "module",
   "main": "./build/src/index.js",
@@ -24,24 +24,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/asushares/core.git"
+    "url": "git+https://github.com/complylight/core.git"
   },
   "keywords": [
-    "asushares",
+    "complylight",
     "hl7",
     "fhir",
     "cds-hooks",
     "smart",
     "cql",
     "typescript",
-    "node"
+    "node",
+    "esm"
   ],
   "author": "Preston Lee",
   "license": "See LICENSE file",
   "bugs": {
-    "url": "https://github.com/asushares/core/issues"
+    "url": "https://github.com/complylight/core/issues"
   },
-  "homepage": "https://github.com/asushares/core#readme",
+  "homepage": "https://github.com/complylight/core#readme",
   "dependencies": {
     "ajv": "^8.17.1",
     "jsonpath-plus": "^10.3.0",
