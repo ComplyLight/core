@@ -133,6 +133,11 @@
                                 "system": "http://snomed.info/sct",
                                 "code": "13746004",
                                 "confidence": 1.0
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "64905009",
+                                "confidence": 1.0
                             }
                         ]
                     }

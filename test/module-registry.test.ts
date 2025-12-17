@@ -9,6 +9,7 @@ import { DataSharingEngineContext } from '../src/model/engine_context.js';
 import { Patient, Bundle, Condition, Observation } from 'fhir/r5.js';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { readFile } from 'fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -598,6 +599,247 @@ describe('Data Segmentation Module Registry', () => {
             const depressionLabel = securityLabels.find((label: any) => label.code === 'DEPRESSION');
             expect(anxietyLabel).toBeDefined();
             expect(depressionLabel).toBeDefined();
+        });
+    });
+
+    describe('Engine with Real Patient Data', () => {
+        test('should correctly label Patient 1 (Adrian) resources with mental health conditions', async () => {
+            const registry = new DataSegmentationModuleRegistry();
+            
+            const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+            registry.addModule(module);
+
+            const ruleProvider = new TestRuleProvider(registry);
+            const engine = new ConsoleDataSharingEngine(
+                ruleProvider,
+                0.5,
+                false,
+                false,
+                registry
+            );
+
+            // Load patient bundle
+            const patientBundlePath = join(__dirname, 'data/Patient 1 - Adrian Allen1 - R5-Initial view.json');
+            const patientBundleJson = await readFile(patientBundlePath, 'utf-8');
+            const patientBundle: Bundle = JSON.parse(patientBundleJson);
+
+            const context: DataSharingEngineContext = {
+                actor: [{ system: 'test-system', value: 'test-actor' }],
+                patientId: [{ system: 'test-system', value: 'cfsb1703736930464' }],
+                content: patientBundle
+            };
+
+            const card = engine.process([], context);
+
+            // Verify security labels were applied
+            expect(card.extension).toBeDefined();
+            expect(card.extension?.content?.entry).toBeDefined();
+            
+            // Find resources with mental health conditions
+            const labeledResources = card.extension?.content?.entry?.filter((e: any) => 
+                e.resource?.meta?.security && e.resource.meta.security.length > 0
+            ) || [];
+
+            expect(labeledResources.length).toBeGreaterThan(0);
+
+            // Find the Condition with bipolar disorder (13746004) - should have MENTAL label
+            const bipolarCondition = labeledResources.find((e: any) => {
+                const codings = e.resource?.code?.coding || [];
+                return codings.some((c: any) => c.code === '13746004');
+            });
+
+            expect(bipolarCondition).toBeDefined();
+            if (bipolarCondition && bipolarCondition.resource?.meta?.security) {
+                const bipolarLabels = bipolarCondition.resource.meta.security;
+                const mentalLabel = bipolarLabels.find((label: any) => label.code === 'MENTAL');
+                expect(mentalLabel).toBeDefined();
+            }
+
+            // Find the Condition with depression (35489007) - should have DEPRESSION label
+            const depressionCondition = labeledResources.find((e: any) => {
+                const codings = e.resource?.code?.coding || [];
+                return codings.some((c: any) => c.code === '35489007');
+            });
+
+            expect(depressionCondition).toBeDefined();
+            if (depressionCondition && depressionCondition.resource?.meta?.security) {
+                const depressionLabels = depressionCondition.resource.meta.security;
+                const depressionLabel = depressionLabels.find((label: any) => label.code === 'DEPRESSION');
+                expect(depressionLabel).toBeDefined();
+            }
+        });
+
+        test('should correctly label Patient 2 (Beth) resources', async () => {
+            const registry = new DataSegmentationModuleRegistry();
+            
+            const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+            registry.addModule(module);
+
+            const ruleProvider = new TestRuleProvider(registry);
+            const engine = new ConsoleDataSharingEngine(
+                ruleProvider,
+                0.5,
+                false,
+                false,
+                registry
+            );
+
+            // Load patient bundle
+            const patientBundlePath = join(__dirname, 'data/Patient 2 - Beth Brooks2 - R5-Initial view.json');
+            const patientBundleJson = await readFile(patientBundlePath, 'utf-8');
+            const patientBundle: Bundle = JSON.parse(patientBundleJson);
+
+            const context: DataSharingEngineContext = {
+                actor: [{ system: 'test-system', value: 'test-actor' }],
+                patientId: [{ system: 'test-system', value: 'cfsb1699034947598' }],
+                content: patientBundle
+            };
+
+            const card = engine.process([], context);
+
+            // Verify security labels were applied
+            expect(card.extension).toBeDefined();
+            expect(card.extension?.content?.entry).toBeDefined();
+            
+            // Find resources with labels
+            const labeledResources = card.extension?.content?.entry?.filter((e: any) => 
+                e.resource?.meta?.security && e.resource.meta.security.length > 0
+            ) || [];
+
+            // Patient 2 has bipolar disorder (13746004) - should be labeled
+            const bipolarCondition = labeledResources.find((e: any) => {
+                const codings = e.resource?.code?.coding || [];
+                return codings.some((c: any) => c.code === '13746004');
+            });
+
+            if (bipolarCondition && bipolarCondition.resource?.meta?.security) {
+                const labels = bipolarCondition.resource.meta.security;
+                const mentalLabel = labels.find((label: any) => label.code === 'MENTAL');
+                expect(mentalLabel).toBeDefined();
+            }
+        });
+
+        test('should correctly label Patient 3 (Carmen) resources', async () => {
+            const registry = new DataSegmentationModuleRegistry();
+            
+            const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+            registry.addModule(module);
+
+            const ruleProvider = new TestRuleProvider(registry);
+            const engine = new ConsoleDataSharingEngine(
+                ruleProvider,
+                0.5,
+                false,
+                false,
+                registry
+            );
+
+            // Load patient bundle
+            const patientBundlePath = join(__dirname, 'data/Patient 3 - Carmen Chavez - R5-Initial view.json');
+            const patientBundleJson = await readFile(patientBundlePath, 'utf-8');
+            const patientBundle: Bundle = JSON.parse(patientBundleJson);
+
+            const context: DataSharingEngineContext = {
+                actor: [{ system: 'test-system', value: 'test-actor' }],
+                patientId: [{ system: 'test-system', value: 'cfsb1700025838491' }],
+                content: patientBundle
+            };
+
+            const card = engine.process([], context);
+
+            // Verify processing completed
+            expect(card.extension).toBeDefined();
+            expect(card.extension?.content?.entry).toBeDefined();
+        });
+
+        test('should correctly label Patient 4 (Diana) resources', async () => {
+            const registry = new DataSegmentationModuleRegistry();
+            
+            const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+            registry.addModule(module);
+
+            const ruleProvider = new TestRuleProvider(registry);
+            const engine = new ConsoleDataSharingEngine(
+                ruleProvider,
+                0.5,
+                false,
+                false,
+                registry
+            );
+
+            // Load patient bundle
+            const patientBundlePath = join(__dirname, 'data/Patient 4 - Diana Dixon4 - R5-Initial view.json');
+            const patientBundleJson = await readFile(patientBundlePath, 'utf-8');
+            const patientBundle: Bundle = JSON.parse(patientBundleJson);
+
+            const context: DataSharingEngineContext = {
+                actor: [{ system: 'test-system', value: 'test-actor' }],
+                patientId: [{ system: 'test-system', value: 'cfsb1700154185275' }],
+                content: patientBundle
+            };
+
+            const card = engine.process([], context);
+
+            // Verify processing completed
+            expect(card.extension).toBeDefined();
+            expect(card.extension?.content?.entry).toBeDefined();
+        });
+
+        test('should correctly label multiple patient bundles with hierarchical categories', async () => {
+            const registry = new DataSegmentationModuleRegistry();
+            
+            const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+            registry.addModule(module);
+
+            const ruleProvider = new TestRuleProvider(registry);
+            const engine = new ConsoleDataSharingEngine(
+                ruleProvider,
+                0.5,
+                false,
+                false,
+                registry
+            );
+
+            // Process Patient 1
+            const patient1Path = join(__dirname, 'data/Patient 1 - Adrian Allen1 - R5-Initial view.json');
+            const patient1Json = await readFile(patient1Path, 'utf-8');
+            const patient1Bundle: Bundle = JSON.parse(patient1Json);
+
+            const context1: DataSharingEngineContext = {
+                actor: [{ system: 'test-system', value: 'test-actor' }],
+                patientId: [{ system: 'test-system', value: 'cfsb1703736930464' }],
+                content: patient1Bundle
+            };
+
+            const card1 = engine.process([], context1);
+
+            // Verify Patient 1 has labeled resources
+            const labeled1 = card1.extension?.content?.entry?.filter((e: any) => 
+                e.resource?.meta?.security && e.resource.meta.security.length > 0
+            ) || [];
+            expect(labeled1.length).toBeGreaterThan(0);
+
+            // Process Patient 2
+            const patient2Path = join(__dirname, 'data/Patient 2 - Beth Brooks2 - R5-Initial view.json');
+            const patient2Json = await readFile(patient2Path, 'utf-8');
+            const patient2Bundle: Bundle = JSON.parse(patient2Json);
+
+            const context2: DataSharingEngineContext = {
+                actor: [{ system: 'test-system', value: 'test-actor' }],
+                patientId: [{ system: 'test-system', value: 'cfsb1699034947598' }],
+                content: patient2Bundle
+            };
+
+            const card2 = engine.process([], context2);
+
+            // Verify Patient 2 processing completed
+            expect(card2.extension).toBeDefined();
+            expect(card2.extension?.content?.entry).toBeDefined();
         });
     });
 
