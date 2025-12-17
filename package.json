@@ -1,7 +1,7 @@
 {
-  "name": "@asushares/core",
+  "name": "@complylight/core",
   "version": "3.1.2",
-  "description": "ASU SHARES common class and CLI utility library.",
+  "description": "ComplyLight common class and CLI utility library.",
   "type": "module",
   "main": "./build/src/index.js",
   "types": "./build/src/index.d.ts",
@@ -37,7 +37,7 @@
     "node"
   ],
   "author": "Preston Lee",
-  "license": "Apache-2.0",
+  "license": "See LICENSE file",
   "bugs": {
     "url": "https://github.com/asushares/core/issues"
   },

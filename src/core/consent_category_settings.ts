@@ -5,7 +5,7 @@ import { InformationCategorySetting } from "./information_category_setting.js";
 
 export class ConsentCategorySettings {
 
-    // SHARES information categories
+    // ComplyLight information categories
     substanceUse: InformationCategorySetting = new InformationCategorySetting('SUD', 'Substance Use', 'Records possibly pertaining to commonly abused stantances.');
     mentalHealth: InformationCategorySetting = new InformationCategorySetting('MENCAT', 'Mental Health', 'All manner of mental health and wellbeing information.');
     demographics: InformationCategorySetting = new InformationCategorySetting('DEMO', 'Demographics', 'General ethnic, social, and environmental background.');
@@ -18,7 +18,7 @@ export class ConsentCategorySettings {
     socialDeterminants: InformationCategorySetting = new InformationCategorySetting('SOCIAL', 'Social Determinents of Health', 'Environmental and contextual factors that may impact your health.');
     violence: InformationCategorySetting = new InformationCategorySetting('VIO', 'Violence', 'Indicators of possible physical or mental harm by violence.');
 
-    // SHARES information sharing purposes
+    // ComplyLight information sharing purposes
     treatment: InformationCategorySetting = new InformationCategorySetting(
         InformationCategorySetting.ACT_CODE_TREATMENT_CODE,
         InformationCategorySetting.ACT_CODE_TREATMENT_NAME,
