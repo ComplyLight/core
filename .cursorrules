@@ -16,6 +16,7 @@ DO NOT AUTOMATICALLY COMMIT CHANGES TO GIT!
 - **Include `.js` extensions in imports**: When importing local files, always include the `.js` extension (TypeScript will resolve to `.ts` files)
 - **Use explicit exports**: Prefer named exports over default exports for better tree-shaking and clarity
 - **Barrel exports**: Use `index.ts` files to re-export related modules for clean public API
+- The built package is published to NPMjs and MUST be usable in both the browser and Node apps. Never use Node APIs!
 
 ### Type Safety
 - **Strict TypeScript**: The project uses `strict: true` - maintain strict type checking
@@ -47,23 +48,18 @@ DO NOT AUTOMATICALLY COMMIT CHANGES TO GIT!
 ### Documentation
 - **JSDoc for public APIs**: Add JSDoc comments for exported classes, methods, and complex logic
 - **Inline comments**: Use comments to explain "why", not "what" (the code should be self-documenting)
-- **TODO comments**: Mark incomplete work with `// TODO @username` format
 
 ## File Structure & Imports
 
 ### Export Strategy
-- **Barrel exports**: Use `src/index.ts` to re-export public APIs
 - **Avoid deep exports**: Prefer exporting from index files rather than deep import paths
 - **Type exports**: Export types alongside implementations when they're part of the public API
 
-## Testing Considerations
-- **Testable code**: Write code that can be easily unit tested
-- **Mock-friendly**: Design interfaces and abstract classes that can be easily mocked
-- **Isolated modules**: Ensure modules can be tested independently
 
 ## Performance & Best Practices
+- **Testable code**: Write code that can be easily unit tested
 - **Avoid premature optimization**: Write clear, maintainable code first
-- **Efficient data structures**: Choose appropriate data structures for the use case
+- **Efficient data structures**: Choose appropriate data structures and minimize code duplication
 - **Memory management**: Be mindful of large data structures and consider streaming for large datasets
 
 ### Model Classes
@@ -74,9 +70,8 @@ DO NOT AUTOMATICALLY COMMIT CHANGES TO GIT!
 ## When Adding New Code
 1. **Check existing patterns**: Look for similar code in the codebase and follow established patterns
 2. **Consider reusability**: Can this be reused elsewhere? Should it be abstracted?
-3. **Type everything**: Ensure all public APIs have explicit types
-4. **Update exports**: Add new exports to `src/index.ts` if they're part of the public API
-5. **Maintain consistency**: Follow the existing code style and structure
+3. **Update exports**: Add new exports to `src/index.ts` if they're part of the public API
+4. **Maintain consistency**: Follow the existing code style and structure
 
 ## Anti-Patterns to Avoid
 - Using `any` without justification

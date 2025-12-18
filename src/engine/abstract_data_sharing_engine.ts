@@ -1,6 +1,5 @@
 // Author: Preston Lee
 
-import { JSONPath } from "jsonpath-plus";
 import { Coding as FhirCoding, Consent, ConsentProvision, FhirResource } from "fhir/r5.js";
 import { ConsentExtension } from "../model/consent_extension.js";
 import { AbstractDataSegmentationModuleProvider } from "../module_provider/abstract_data_segmentation_module_provider.js";
@@ -14,17 +13,24 @@ import { DataSegmentationModuleRegistry } from "../core/data_segmentation_module
 import { DataSegmentationModule } from "../core/data_segmentation_module.js";
 import { Policy } from "../model/policy.js";
 import { CodingWithPolicies } from "../model/coding_with_policies.js";
+import { DocumentProcessorRegistry } from "../document_processor/document_processor_registry.js";
+import { ProcessableDocument } from "../document_processor/types/processable_document.js";
+import { DocumentType } from "../document_processor/types/document_type.js";
 
 export abstract class AbstractDataSharingEngine {
 
     protected moduleRegistry: DataSegmentationModuleRegistry;
+    protected documentProcessorRegistry: DocumentProcessorRegistry;
 
     constructor(public moduleProvider: AbstractDataSegmentationModuleProvider,
         public threshold: number,
         public redaction_enabled: boolean,
         public create_audit_event: boolean,
-        moduleRegistry: DataSegmentationModuleRegistry) {
+        moduleRegistry: DataSegmentationModuleRegistry,
+        documentProcessorRegistry?: DocumentProcessorRegistry) {
         this.moduleRegistry = moduleRegistry;
+        // Use provided registry or create default with FHIR and CDA processors
+        this.documentProcessorRegistry = documentProcessorRegistry || DocumentProcessorRegistry.createDefault();
     }
 
 
@@ -54,8 +60,30 @@ export abstract class AbstractDataSharingEngine {
             console.info("No applicable consent documents.");
         }
 
+        // Get or create ProcessableDocument from context
+        let processableDoc: ProcessableDocument | null = null;
+        if (engineContext.contentDocument) {
+            processableDoc = engineContext.contentDocument;
+        } else if (engineContext.content) {
+            // Legacy: convert FHIR Bundle to ProcessableDocument
+            const processor = this.documentProcessorRegistry.findProcessor(engineContext.content);
+            if (processor) {
+                processableDoc = processor.process(engineContext.content);
+            }
+        } else if (engineContext.contentRaw) {
+            // Try to process raw content
+            const processor = this.documentProcessorRegistry.findProcessor(engineContext.contentRaw);
+            if (processor) {
+                processableDoc = processor.process(engineContext.contentRaw);
+            }
+        }
+
         // Add copy of request content to response, if present.
-        if (engineContext.content) {
+        if (processableDoc) {
+            card.extension = new ConsentExtension(processableDoc);
+            card.extension.decision = card.summary;
+        } else if (engineContext.content) {
+            // Fallback to legacy FHIR Bundle
             card.extension = new ConsentExtension(engineContext.content);
             card.extension.decision = card.summary;
         }
@@ -71,8 +99,13 @@ export abstract class AbstractDataSharingEngine {
         }
 
         // Update the number of bundle resource, as it may have changed due to redaction.
-        if (card.extension?.content?.entry) {
-
+        if (card.extension?.contentDocument) {
+            const units = card.extension.contentDocument.getLabelableUnits();
+            // For FHIR Bundle backward compatibility
+            if (card.extension.content?.entry) {
+                card.extension.content.total = units.length;
+            }
+        } else if (card.extension?.content?.entry) {
             card.extension.content.total = card.extension?.content?.entry?.length;
         }
 
@@ -87,52 +120,78 @@ export abstract class AbstractDataSharingEngine {
     abstract createAuditEvent(consents: Consent[], engineContext: DataSharingEngineContext, outcodeCode: FhirCoding): void;
 
     addSecurityLabels(consents: Consent[], engineContext: DataSharingEngineContext, consentExtension: ConsentExtension) {
-        if (engineContext.content?.entry) { // If the request contains FHIR resources
-            // Find all Coding elements anywhere within the tree. It doesn't matter where.
-            // consentExtension = new ConsentExtension(engineContext.content);
-            if (consentExtension.content?.entry) {
-                consentExtension.content.entry.forEach((e: any) => {
-                    if (e.resource) {
-                        // TODO This is a pretty naiive implementation, as it only looks for coded elements recursively without awareness of the context.
-                        let codings = JSONPath({ path: "$..coding", json: e.resource }).flat();
-                        let applicableBindings = this.moduleProvider.applicableBindingsForAll(codings, this.threshold);
-                        if (!e.resource.meta) {
-                            e.resource.meta = {};
-                        }
-                        if (!e.resource.meta.security) {
-                            e.resource.meta.security = [];
-                        }
-                        applicableBindings.forEach(binding => {
-                            let ob = { id: AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION, parameters: { codes: binding.labels } }
-                            consentExtension.obligations.push(ob);
-                            
-                            binding.labels.forEach(l => {
-                                // Check if identical label already exists
-                                const existingLabel = this.findSecurityLabel(e.resource.meta.security, l);
-                                if (!existingLabel) {
-                                    // New label: attach policy objects from binding and add it
-                                    if (binding.policies.length > 0) {
-                                        l.policies = binding.policies.map(p => p.clone());
-                                    }
-                                    e.resource?.meta?.security?.push(l);
-                                } else {
-                                    // Existing label: merge policies if this binding has policies
-                                    if (binding.policies.length > 0) {
-                                        if (!existingLabel.policies) {
-                                            existingLabel.policies = [];
-                                        }
-                                        // Add policies that aren't already present (deduplicate by ID)
-                                        binding.policies.forEach(policy => {
-                                            if (!existingLabel.policies!.some(existing => existing.id === policy.id)) {
-                                                existingLabel.policies!.push(policy.clone());
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        });
+        // Get ProcessableDocument from extension or context
+        let processableDoc: ProcessableDocument | null = null;
+        if (consentExtension.contentDocument) {
+            processableDoc = consentExtension.contentDocument;
+        } else if (consentExtension.content) {
+            // Legacy: convert FHIR Bundle to ProcessableDocument
+            const processor = this.documentProcessorRegistry.findProcessor(consentExtension.content);
+            if (processor) {
+                processableDoc = processor.process(consentExtension.content);
+                if (processableDoc) {
+                    consentExtension.contentDocument = processableDoc;
+                }
+            }
+        }
+
+        if (!processableDoc) {
+            return; // No processable document available
+        }
+
+        // Get all labelable units
+        const units = processableDoc.getLabelableUnits();
+
+        // Track unique bindings to avoid duplicate obligations
+        const seenBindings = new Set<string>();
+
+        // Process each unit
+        units.forEach(unit => {
+            // Extract codings from this specific unit
+            const unitCodings = unit.extractCodings();
+            const unitBindings = this.moduleProvider.applicableBindingsForAll(unitCodings, this.threshold);
+
+            unitBindings.forEach(binding => {
+                // Create unique key for this binding to avoid duplicate obligations
+                const bindingKey = `${binding.id || 'binding'}-${binding.labels.map(l => `${l.system}|${l.code}`).join(',')}`;
+                
+                // Add redaction obligation only once per unique binding
+                if (!seenBindings.has(bindingKey)) {
+                    seenBindings.add(bindingKey);
+                    const ob = {
+                        id: AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION,
+                        parameters: { codes: binding.labels }
+                    };
+                    consentExtension.obligations.push(ob);
+                }
+
+                // Prepare labels to apply with policies attached
+                // The processor will handle duplicate detection and policy merging
+                const labelsToApply: CodingWithPolicies[] = binding.labels.map(l => {
+                    const label = new CodingWithPolicies();
+                    label.system = l.system;
+                    label.code = l.code;
+                    label.display = l.display;
+                    // Attach policies from binding
+                    if (binding.policies.length > 0) {
+                        label.policies = binding.policies.map(p => p.clone());
                     }
+                    return label;
                 });
+
+                // Apply labels to the unit (processor handles duplicate detection and merging)
+                processableDoc!.applySecurityLabelsToUnit(unit.id, labelsToApply);
+            });
+        });
+
+        // Update extension with modified document
+        consentExtension.contentDocument = processableDoc;
+        
+        // For backward compatibility, update FHIR Bundle if it's a FHIR document
+        if (processableDoc.getDocumentType() === DocumentType.FHIR_BUNDLE) {
+            const fhirDoc = processableDoc as any;
+            if (fhirDoc.getBundle) {
+                consentExtension.content = fhirDoc.getBundle();
             }
         }
     }
@@ -165,8 +224,41 @@ export abstract class AbstractDataSharingEngine {
         return found as CodingWithPolicies | undefined;
     }
 
-    // redactFromLabels(card: Card) {
-    shouldRedactFromLabels(consentExtension: ConsentExtension, resource: FhirResource): boolean {
+    /**
+     * Check if a unit should be redacted based on redaction labels in obligations.
+     * @param consentExtension - The consent extension containing obligations
+     * @param unitId - The ID of the unit to check
+     * @param processableDoc - The processable document containing the unit
+     * @returns True if the unit should NOT be redacted (i.e., should be kept), false if it should be redacted
+     */
+    shouldRedactFromLabels(consentExtension: ConsentExtension, unitId: string, processableDoc: ProcessableDocument): boolean {
+        // Get redaction labels from obligations
+        const redactionLabels: CodingWithPolicies[] = [];
+        consentExtension.obligations.forEach(o => {
+            if (o.id.code === AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.code &&
+                o.id.system === AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.system) {
+                o.parameters.codes.forEach(code => {
+                    const label = new CodingWithPolicies();
+                    label.system = code.system;
+                    label.code = code.code;
+                    redactionLabels.push(label);
+                });
+            }
+        });
+
+        if (redactionLabels.length === 0) {
+            return true; // No redaction labels, keep the unit
+        }
+
+        // Check if unit should be redacted using format-agnostic method
+        return !processableDoc.shouldRedactUnit(unitId, redactionLabels);
+    }
+
+    /**
+     * Legacy method for backward compatibility with FHIR resources.
+     * @deprecated Use shouldRedactFromLabels with ProcessableDocument instead
+     */
+    shouldRedactFromLabelsLegacy(consentExtension: ConsentExtension, resource: FhirResource): boolean {
         let shouldRedact = false;
         if (resource?.meta?.security) {
             consentExtension.obligations.forEach(o => {
@@ -211,16 +303,80 @@ export abstract class AbstractDataSharingEngine {
         return sharable;
     }
 
+    /**
+     * Check if a unit should be shared based on purposes (format-agnostic version).
+     * @param unitId - The ID of the unit to check
+     * @param processableDoc - The processable document
+     * @param p - The consent provision
+     * @returns True if the unit should be shared
+     */
+    shouldShareFromPurposesUnit(unitId: string, processableDoc: ProcessableDocument, p: ConsentProvision): boolean {
+        let sharable = false;
+        const enabledPurposes = this.moduleRegistry.getAllPurposes();
+        enabledPurposes.forEach(purpose => {
+            if (purpose.enabled && this.sharableForPurpose(p, purpose)) {
+                sharable = true;
+            }
+        });
+        return sharable;
+    }
+
     // shouldRedactFromPurposes(consentExtension: ConsentExtension, resource: FhirResource) {}
 
     redactFromLabels(consentExtension: ConsentExtension) {
-        if (consentExtension.content?.entry) {
-            consentExtension.content.entry = consentExtension.content?.entry.filter((e: any) => {
+        if (consentExtension.contentDocument) {
+            // Format-agnostic redaction using ProcessableDocument
+            const processableDoc = consentExtension.contentDocument;
+            const units = processableDoc.getLabelableUnits();
+            
+            // Get redaction labels from obligations
+            const redactionLabels: CodingWithPolicies[] = [];
+            consentExtension.obligations.forEach(o => {
+                if (o.id.code === AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.code &&
+                    o.id.system === AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.system) {
+                    o.parameters.codes.forEach(code => {
+                        const label = new CodingWithPolicies();
+                        label.system = code.system;
+                        label.code = code.code;
+                        redactionLabels.push(label);
+                    });
+                }
+            });
+
+            // Filter units - keep only those that should not be redacted
+            const unitsToKeep = units.filter(unit => 
+                !processableDoc.shouldRedactUnit(unit.id, redactionLabels)
+            );
+
+            // Create a new document with only non-redacted units
+            // Note: This is format-specific, so we need to handle it in the processor
+            // For now, we'll mark units for redaction and let the processor handle removal
+            // The actual removal will be handled by format-specific logic
+            
+            // Update the document (processors will handle the actual redaction)
+            consentExtension.contentDocument = processableDoc;
+            
+            // For FHIR Bundle backward compatibility
+            if (processableDoc.getDocumentType() === DocumentType.FHIR_BUNDLE && consentExtension.content) {
+                // Filter FHIR Bundle entries
+                if (consentExtension.content.entry) {
+                    consentExtension.content.entry = consentExtension.content.entry.filter((e: any) => {
+                        if (e.resource) {
+                            const unitId = e.resource.id || `resource-${consentExtension.content!.entry!.indexOf(e)}`;
+                            return !processableDoc.shouldRedactUnit(unitId, redactionLabels);
+                        }
+                        return true;
+                    });
+                }
+            }
+        } else if (consentExtension.content?.entry) {
+            // Legacy: FHIR Bundle redaction
+            consentExtension.content.entry = consentExtension.content.entry.filter((e: any) => {
                 if (e.resource) {
-                    return !this.shouldRedactFromLabels(consentExtension, e!.resource);
+                    return this.shouldRedactFromLabelsLegacy(consentExtension, e!.resource);
                 }
                 return true;
-            })
+            });
         }
     }
 
@@ -303,6 +459,10 @@ export abstract class AbstractDataSharingEngine {
     }
 
 
+    /**
+     * Compute consent decisions for resources (legacy FHIR version).
+     * @deprecated Use computeConsentDecisionsForDocument with ProcessableDocument instead
+     */
     computeConsentDecisionsForResources(labeledResources: FhirResource[], consent: Consent): { [key: string]: Card } {
         let consentDecisions: { [key: string]: Card } = {};
         let shouldShare = false;
@@ -330,7 +490,7 @@ export abstract class AbstractDataSharingEngine {
                                     .map(c => { return { system: c.system, code: c.act_code } }) // Make it a valid Coding
                             }
                         })
-                        shouldShare = !this.shouldRedactFromLabels(extension, r) && this.shouldShareFromPurposes(r, p);
+                        shouldShare = this.shouldRedactFromLabelsLegacy(extension, r) && this.shouldShareFromPurposes(r, p);
                     } else {
                         // Unlabeled resource: follow consent's base decision AND consider purpose of use
                         shouldShare = consent?.decision === 'permit' && this.shouldShareFromPurposes(r, p);
@@ -355,6 +515,80 @@ export abstract class AbstractDataSharingEngine {
         return consentDecisions;
     }
 
+    /**
+     * Compute consent decisions for a processable document (format-agnostic).
+     * @param processableDoc - The processable document
+     * @param consent - The consent to evaluate
+     * @returns Map of unit IDs to consent decision cards
+     */
+    computeConsentDecisionsForDocument(processableDoc: ProcessableDocument, consent: Consent): { [key: string]: Card } {
+        let consentDecisions: { [key: string]: Card } = {};
+        let shouldShare = false;
+        const units = processableDoc.getLabelableUnits();
+
+        if (consent?.provision) {
+            if (consent.decision === undefined) {
+                consent.decision = 'deny';
+            }
+            const tmpModule = DataSegmentationModule.createFromRegistry(this.moduleRegistry);
+
+            consent.provision.forEach((p) => {
+                tmpModule.loadAllFromConsentProvision(p);
+                units.forEach((unit) => {
+                    const unitLabels = processableDoc.getSecurityLabelsForUnit(unit.id);
+                    
+                    if (unitLabels.length > 0) {
+                        // Labeled unit: apply full purpose-based logic
+                        let extension = new ConsentExtension(null);
+                        let includeEnabled = consent?.decision == 'permit';
+                        extension.obligations.push({
+                            id: { system: AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.system, code: AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.code },
+                            parameters: {
+                                codes: tmpModule.allCategories()
+                                    .filter(c => includeEnabled ? !c.enabled : c.enabled)
+                                    .map(c => { return { system: c.system, code: c.act_code } })
+                            }
+                        });
+                        
+                        const redactionLabels: CodingWithPolicies[] = [];
+                        extension.obligations.forEach(o => {
+                            if (o.id.code === AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.code &&
+                                o.id.system === AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.system) {
+                                o.parameters.codes.forEach(code => {
+                                    const label = new CodingWithPolicies();
+                                    label.system = code.system;
+                                    label.code = code.code;
+                                    redactionLabels.push(label);
+                                });
+                            }
+                        });
+                        
+                        shouldShare = !processableDoc.shouldRedactUnit(unit.id, redactionLabels) && 
+                                     this.shouldShareFromPurposesUnit(unit.id, processableDoc, p);
+                    } else {
+                        // Unlabeled unit: follow consent's base decision AND consider purpose of use
+                        shouldShare = consent?.decision === 'permit' && this.shouldShareFromPurposesUnit(unit.id, processableDoc, p);
+                    }
+                    
+                    if (shouldShare) {
+                        consentDecisions[unit.id] = new PermitCard();
+                    } else {
+                        consentDecisions[unit.id] = new DenyCard();
+                    }
+                });
+            });
+        } else {
+            units.forEach((unit) => {
+                if (consent?.decision == 'deny') {
+                    consentDecisions[unit.id] = new DenyCard();
+                } else {
+                    consentDecisions[unit.id] = new PermitCard();
+                }
+            });
+        }
+        return consentDecisions;
+    }
+
 
     exportDecisionsForCsv(resources: FhirResource[], decisions: { [key: string]: Card }) {
         let data = this.exportCsvData(resources, decisions);
@@ -367,6 +601,10 @@ export abstract class AbstractDataSharingEngine {
         return csvContent;
     }
 
+    /**
+     * Export CSV data for FHIR resources (legacy version).
+     * @deprecated Use exportCsvDataForDocument with ProcessableDocument instead
+     */
     exportCsvData(labeledResources: FhirResource[], decisions: { [key: string]: Card; }) {
         let data = [['Resource Type', 'Resource ID', 'Labels', 'Decision']];
         labeledResources.forEach((r) => {
@@ -395,6 +633,51 @@ export abstract class AbstractDataSharingEngine {
                 r.id || 'unknown',
                 labels.join('|'),
                     decision]);
+            }
+        });
+        return data;
+    }
+
+    /**
+     * Export CSV data for a processable document (format-agnostic).
+     * @param processableDoc - The processable document
+     * @param decisions - Map of unit IDs to consent decision cards
+     * @returns Array of CSV rows
+     */
+    exportCsvDataForDocument(processableDoc: ProcessableDocument, decisions: { [key: string]: Card; }) {
+        let data = [['Unit Type', 'Unit ID', 'Labels', 'Decision']];
+        const units = processableDoc.getLabelableUnits();
+        
+        units.forEach((unit) => {
+            let labels: string[] = [];
+            const unitLabels = processableDoc.getSecurityLabelsForUnit(unit.id);
+            unitLabels.forEach((label) => {
+                if (label.code) {
+                    const category = this.moduleRegistry.findCategoryByCode(label.code);
+                    let labelName = category?.name || (label.code + ' (Unknown)');
+                    labels.push(labelName);
+                } else {
+                    labels.push('(Unknown)');
+                }
+            });
+            
+            if (decisions[unit.id]) {
+                let decision = 'Undecided';
+                switch (decisions[unit.id].summary) {
+                    case ConsentDecision.CONSENT_PERMIT:
+                        decision = 'Permit';
+                        break;
+                    case ConsentDecision.CONSENT_DENY:
+                        decision = 'Deny';
+                    default:
+                        break;
+                }
+                data.push([
+                    unit.type,
+                    unit.id,
+                    labels.join('|'),
+                    decision
+                ]);
             }
         });
         return data;

@@ -2,6 +2,7 @@
 
 import { Bundle, Consent } from "fhir/r5.js";
 import { SystemValue, SystemCode } from "../cds/data_sharing_cds_hook_request.js";
+import { ProcessableDocument } from "../document_processor/types/processable_document.js";
 
 export class DataSharingEngineContext {
 
@@ -31,8 +32,20 @@ export class DataSharingEngineContext {
 
     /**
      * FHIR data to be evaluated.
+     * @deprecated Use contentDocument for format-agnostic processing
      */
     content?: Bundle;
+
+    /**
+     * Format-agnostic processable document content.
+     * The engine will use this if present, otherwise fall back to content (FHIR Bundle).
+     */
+    contentDocument?: ProcessableDocument;
+
+    /**
+     * Raw document content before processing (for format detection).
+     */
+    contentRaw?: unknown;
 
     /**
      * Optional Consent directives to use in leui of any that may be retrieved by, or known to, the engine.

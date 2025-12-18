@@ -34,3 +34,23 @@ export * from "./model/policy.js";
 
 export * from "./module_provider/abstract_data_segmentation_module_provider.js";
 export * from "./module_provider/dummy_data_segmentation_module_provider.js";
+
+// Document processor types
+export * from "./document_processor/types/document_type.js";
+export * from "./document_processor/types/labelable_unit.js";
+export * from "./document_processor/types/processable_document.js";
+
+// Document processor base classes
+export * from "./document_processor/abstract_document_processor.js";
+export * from "./document_processor/document_processor_registry.js";
+
+// FHIR processors
+export * from "./document_processor/fhir/fhir_resource_unit.js";
+export * from "./document_processor/fhir/fhir_bundle_document.js";
+export * from "./document_processor/fhir/fhir_bundle_processor.js";
+
+// CDA processors
+export * from "./document_processor/cda/cda_types.js";
+export * from "./document_processor/cda/cda_unit.js";
+export * from "./document_processor/cda/cda_document.js";
+export * from "./document_processor/cda/cda_document_processor.js";
