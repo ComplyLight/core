@@ -4,7 +4,7 @@ This "core" library operates on FHIR and healthcare data to provide information 
 
 As a TypeScript library published as an ESM (ES Module) package, the codebase emphasizes clean, reusable, and extensible patterns suitable for healthcare consent management, enforcement, and data exchange systems. It must be usable both within the browser as well as Node-based applications. Two such critical applications and checked out in:
 
-- ../cds - NodeJS API exposing capabilities of the core library via CDS-Hooks and REST APIs
+- ../server - NodeJS API exposing capabilities of the core library via CDS-Hooks and REST APIs
 - ../portal - User-facing SPA browser webapp written in Angular.
  
 DO NOT AUTOMATICALLY COMMIT CHANGES TO GIT!

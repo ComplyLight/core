@@ -9,7 +9,6 @@ import { CodeSet } from "../model/code_set.js";
 import { CodeSetCoding } from "../model/code_set_coding.js";
 import { CodingWithPolicies } from "../model/coding_with_policies.js";
 import { Policy } from "../model/policy.js";
-import { readFile } from "fs/promises";
 
 export class DataSegmentationModule {
 
@@ -494,17 +493,6 @@ export class DataSegmentationModule {
         }
         
         return module;
-    }
-
-    /**
-     * Load a DataSegmentationModule from a JSON file.
-     * @param path - Path to the JSON file
-     * @returns Promise resolving to a DataSegmentationModule instance
-     */
-    static async fromFile(path: string): Promise<DataSegmentationModule> {
-        const fileContent = await readFile(path, 'utf-8');
-        const json = JSON.parse(fileContent);
-        return DataSegmentationModule.fromJson(json);
     }
 
     /**

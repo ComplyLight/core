@@ -15,12 +15,22 @@ import { readFile } from 'fs/promises';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+/**
+ * Helper function to load a module from a file path (Node.js only, for testing).
+ * Applications should load JSON files themselves and use DataSegmentationModule.fromJson().
+ */
+async function loadModuleFromFile(path: string): Promise<DataSegmentationModule> {
+    const fileContent = await readFile(path, 'utf-8');
+    const json = JSON.parse(fileContent);
+    return DataSegmentationModule.fromJson(json);
+}
+
 describe('Data Segmentation Module Registry', () => {
 
     describe('Hierarchical Categories', () => {
         test('should correctly load and structure hierarchical categories', async () => {
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
 
             expect(module.categories).toHaveLength(5);
             
@@ -50,7 +60,7 @@ describe('Data Segmentation Module Registry', () => {
 
         test('should correctly identify descendants in hierarchy', async () => {
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
 
             const healthCategory = module.categoryForCode('HEALTH');
             expect(healthCategory).toBeDefined();
@@ -67,7 +77,7 @@ describe('Data Segmentation Module Registry', () => {
 
         test('should handle deep hierarchy (4 levels)', async () => {
             const modulePath = join(__dirname, 'modules/test-module-deep-hierarchy.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
 
             expect(module.categories).toHaveLength(5);
 
@@ -84,7 +94,7 @@ describe('Data Segmentation Module Registry', () => {
 
         test('should correctly check if category is descendant of another', async () => {
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
 
             const healthCategory = module.categoryForCode('HEALTH');
             const mentalCategory = module.categoryForCode('MENTAL');
@@ -104,8 +114,8 @@ describe('Data Segmentation Module Registry', () => {
             const module1Path = join(__dirname, 'modules/test-module-flat.json');
             const module2Path = join(__dirname, 'modules/test-module-hierarchical-1.json');
             
-            const module1 = await DataSegmentationModule.fromFile(module1Path);
-            const module2 = await DataSegmentationModule.fromFile(module2Path);
+            const module1 = await loadModuleFromFile(module1Path);
+            const module2 = await loadModuleFromFile(module2Path);
 
             registry.addModule(module1);
             registry.addModule(module2);
@@ -121,8 +131,8 @@ describe('Data Segmentation Module Registry', () => {
             const module1Path = join(__dirname, 'modules/test-module-flat.json');
             const module2Path = join(__dirname, 'modules/test-module-hierarchical-2.json');
             
-            const module1 = await DataSegmentationModule.fromFile(module1Path);
-            const module2 = await DataSegmentationModule.fromFile(module2Path);
+            const module1 = await loadModuleFromFile(module1Path);
+            const module2 = await loadModuleFromFile(module2Path);
 
             // Both modules have DEMO category - module1 should win (higher priority)
             registry.addModule(module1);
@@ -140,8 +150,8 @@ describe('Data Segmentation Module Registry', () => {
             const module1Path = join(__dirname, 'modules/test-module-flat.json');
             const module2Path = join(__dirname, 'modules/test-module-hierarchical-1.json');
             
-            const module1 = await DataSegmentationModule.fromFile(module1Path);
-            const module2 = await DataSegmentationModule.fromFile(module2Path);
+            const module1 = await loadModuleFromFile(module1Path);
+            const module2 = await loadModuleFromFile(module2Path);
 
             registry.addModule(module1);
             registry.addModule(module2);
@@ -168,8 +178,8 @@ describe('Data Segmentation Module Registry', () => {
             const module1Path = join(__dirname, 'modules/test-module-flat.json');
             const module2Path = join(__dirname, 'modules/test-module-hierarchical-1.json');
             
-            const module1 = await DataSegmentationModule.fromFile(module1Path);
-            const module2 = await DataSegmentationModule.fromFile(module2Path);
+            const module1 = await loadModuleFromFile(module1Path);
+            const module2 = await loadModuleFromFile(module2Path);
 
             registry.addModule(module1);
             registry.addModule(module2);
@@ -193,9 +203,9 @@ describe('Data Segmentation Module Registry', () => {
             const module2Path = join(__dirname, 'modules/test-module-hierarchical-1.json');
             const module3Path = join(__dirname, 'modules/test-module-hierarchical-2.json');
             
-            const module1 = await DataSegmentationModule.fromFile(module1Path);
-            const module2 = await DataSegmentationModule.fromFile(module2Path);
-            const module3 = await DataSegmentationModule.fromFile(module3Path);
+            const module1 = await loadModuleFromFile(module1Path);
+            const module2 = await loadModuleFromFile(module2Path);
+            const module3 = await loadModuleFromFile(module3Path);
 
             registry.addModule(module1); // Priority 0
             registry.addModule(module2); // Priority 1
@@ -214,8 +224,8 @@ describe('Data Segmentation Module Registry', () => {
             const module1Path = join(__dirname, 'modules/test-module-hierarchical-1.json');
             const module2Path = join(__dirname, 'modules/test-module-flat.json');
             
-            const module1 = await DataSegmentationModule.fromFile(module1Path);
-            const module2 = await DataSegmentationModule.fromFile(module2Path);
+            const module1 = await loadModuleFromFile(module1Path);
+            const module2 = await loadModuleFromFile(module2Path);
 
             registry.addModule(module1);
             registry.addModule(module2);
@@ -249,8 +259,8 @@ describe('Data Segmentation Module Registry', () => {
             const module1Path = join(__dirname, 'modules/test-module-flat.json');
             const module2Path = join(__dirname, 'modules/test-module-hierarchical-1.json');
             
-            const module1 = await DataSegmentationModule.fromFile(module1Path);
-            const module2 = await DataSegmentationModule.fromFile(module2Path);
+            const module1 = await loadModuleFromFile(module1Path);
+            const module2 = await loadModuleFromFile(module2Path);
 
             registry.addModule(module1);
             registry.addModule(module2);
@@ -289,8 +299,8 @@ describe('Data Segmentation Module Registry', () => {
             const module1Path = join(__dirname, 'modules/test-module-hierarchical-2.json');
             const module2Path = join(__dirname, 'modules/test-module-flat.json');
             
-            const module1 = await DataSegmentationModule.fromFile(module1Path);
-            const module2 = await DataSegmentationModule.fromFile(module2Path);
+            const module1 = await loadModuleFromFile(module1Path);
+            const module2 = await loadModuleFromFile(module2Path);
 
             // Add module2 first (lower priority), then module1 (higher priority)
             registry.addModule(module2);
@@ -309,7 +319,7 @@ describe('Data Segmentation Module Registry', () => {
             const registry = new DataSegmentationModuleRegistry();
             
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
             registry.addModule(module);
 
             const moduleProvider = new TestDataSegmentationModuleProvider(registry);
@@ -390,8 +400,8 @@ describe('Data Segmentation Module Registry', () => {
             const module1Path = join(__dirname, 'modules/test-module-hierarchical-1.json');
             const module2Path = join(__dirname, 'modules/test-module-flat.json');
             
-            const module1 = await DataSegmentationModule.fromFile(module1Path);
-            const module2 = await DataSegmentationModule.fromFile(module2Path);
+            const module1 = await loadModuleFromFile(module1Path);
+            const module2 = await loadModuleFromFile(module2Path);
 
             registry.addModule(module1);
             registry.addModule(module2);
@@ -456,7 +466,7 @@ describe('Data Segmentation Module Registry', () => {
             const registry = new DataSegmentationModuleRegistry();
             
             const modulePath = join(__dirname, 'modules/test-module-deep-hierarchy.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
             registry.addModule(module);
 
             const moduleProvider = new TestDataSegmentationModuleProvider(registry);
@@ -530,7 +540,7 @@ describe('Data Segmentation Module Registry', () => {
             const registry = new DataSegmentationModuleRegistry();
             
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
             registry.addModule(module);
 
             const moduleProvider = new TestDataSegmentationModuleProvider(registry);
@@ -606,7 +616,7 @@ describe('Data Segmentation Module Registry', () => {
     describe('Policies', () => {
         test('should load policies from module JSON', async () => {
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
 
             expect(module.policies).toBeDefined();
             expect(module.policies.length).toBe(5);
@@ -645,7 +655,7 @@ describe('Data Segmentation Module Registry', () => {
 
         test('should load policy references in bindings', async () => {
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
 
             expect(module.rules).toBeDefined();
             expect(module.rules?.bindings.length).toBeGreaterThan(0);
@@ -679,7 +689,7 @@ describe('Data Segmentation Module Registry', () => {
 
         test('should clone policies correctly', async () => {
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
 
             const cloned = module.clone();
 
@@ -699,7 +709,7 @@ describe('Data Segmentation Module Registry', () => {
 
         test('should clone binding policies correctly', async () => {
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
 
             const cloned = module.clone();
 
@@ -720,7 +730,7 @@ describe('Data Segmentation Module Registry', () => {
 
         test('should handle bindings with empty policies array', async () => {
             const modulePath = join(__dirname, 'modules/test-module-flat.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
 
             expect(module.rules).toBeDefined();
             if (module.rules && module.rules.bindings.length > 0) {
@@ -737,7 +747,7 @@ describe('Data Segmentation Module Registry', () => {
             const registry = new DataSegmentationModuleRegistry();
             
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
             registry.addModule(module);
 
             const moduleProvider = new TestDataSegmentationModuleProvider(registry);
@@ -804,7 +814,7 @@ describe('Data Segmentation Module Registry', () => {
             const registry = new DataSegmentationModuleRegistry();
             
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
             registry.addModule(module);
 
             const moduleProvider = new TestDataSegmentationModuleProvider(registry);
@@ -855,7 +865,7 @@ describe('Data Segmentation Module Registry', () => {
             const registry = new DataSegmentationModuleRegistry();
             
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
             registry.addModule(module);
 
             const moduleProvider = new TestDataSegmentationModuleProvider(registry);
@@ -889,7 +899,7 @@ describe('Data Segmentation Module Registry', () => {
             const registry = new DataSegmentationModuleRegistry();
             
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
             registry.addModule(module);
 
             const moduleProvider = new TestDataSegmentationModuleProvider(registry);
@@ -923,7 +933,7 @@ describe('Data Segmentation Module Registry', () => {
             const registry = new DataSegmentationModuleRegistry();
             
             const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
-            const module = await DataSegmentationModule.fromFile(modulePath);
+            const module = await loadModuleFromFile(modulePath);
             registry.addModule(module);
 
             const moduleProvider = new TestDataSegmentationModuleProvider(registry);
