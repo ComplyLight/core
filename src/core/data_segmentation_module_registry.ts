@@ -2,6 +2,7 @@
 
 import { DataSegmentationModule } from "./data_segmentation_module.js";
 import { InformationCategorySetting } from "./information_category_setting.js";
+import { Policy } from "../model/policy.js";
 
 /**
  * Registry for managing multiple DataSegmentationModule instances with priority ordering.
@@ -177,6 +178,40 @@ export class DataSegmentationModuleRegistry {
      */
     getEnabledModules(): DataSegmentationModule[] {
         return this.modules.filter(m => m.isEnabled());
+    }
+
+    /**
+     * Find a policy by ID, searching only enabled modules in priority order.
+     * First match wins (highest priority enabled module).
+     * @param policyId - Policy ID to search for
+     * @returns The policy if found, null otherwise
+     */
+    findPolicyById(policyId: string): Policy | null {
+        for (const module of this.modules) {
+            if (module.isEnabled()) {
+                const policy = module.policies.find(p => p.id === policyId);
+                if (policy) {
+                    return policy;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find multiple policies by their IDs.
+     * @param policyIds - Array of policy IDs to search for
+     * @returns Array of found Policy objects (may be shorter than input if some not found)
+     */
+    findPoliciesByIds(policyIds: string[]): Policy[] {
+        const foundPolicies: Policy[] = [];
+        for (const policyId of policyIds) {
+            const policy = this.findPolicyById(policyId);
+            if (policy) {
+                foundPolicies.push(policy);
+            }
+        }
+        return foundPolicies;
     }
 
 }

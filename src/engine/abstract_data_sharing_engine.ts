@@ -1,7 +1,7 @@
 // Author: Preston Lee
 
 import { JSONPath } from "jsonpath-plus";
-import { Coding, Consent, ConsentProvision, FhirResource } from "fhir/r5.js";
+import { Coding as FhirCoding, Consent, ConsentProvision, FhirResource } from "fhir/r5.js";
 import { ConsentExtension } from "../model/consent_extension.js";
 import { AbstractDataSegmentationModuleProvider } from "../module_provider/abstract_data_segmentation_module_provider.js";
 import { DataSharingEngineContext } from "../model/engine_context.js";
@@ -12,6 +12,8 @@ import { PermitCard } from "../cds/cards/permit_card.js";
 import { ConsentCategorySettings, ConsentDecision, InformationCategorySetting } from "../index.js";
 import { DataSegmentationModuleRegistry } from "../core/data_segmentation_module_registry.js";
 import { DataSegmentationModule } from "../core/data_segmentation_module.js";
+import { Policy } from "../model/policy.js";
+import { CodingWithPolicies } from "../model/coding_with_policies.js";
 
 export abstract class AbstractDataSharingEngine {
 
@@ -82,7 +84,7 @@ export abstract class AbstractDataSharingEngine {
         return card;
     }
 
-    abstract createAuditEvent(consents: Consent[], engineContext: DataSharingEngineContext, outcodeCode: Coding): void;
+    abstract createAuditEvent(consents: Consent[], engineContext: DataSharingEngineContext, outcodeCode: FhirCoding): void;
 
     addSecurityLabels(consents: Consent[], engineContext: DataSharingEngineContext, consentExtension: ConsentExtension) {
         if (engineContext.content?.entry) { // If the request contains FHIR resources
@@ -103,10 +105,29 @@ export abstract class AbstractDataSharingEngine {
                         applicableBindings.forEach(binding => {
                             let ob = { id: AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION, parameters: { codes: binding.labels } }
                             consentExtension.obligations.push(ob);
+                            
                             binding.labels.forEach(l => {
-                                // Deduplicate: check if identical label already exists
-                                if (!this.isDuplicateSecurityLabel(e.resource.meta.security, l)) {
+                                // Check if identical label already exists
+                                const existingLabel = this.findSecurityLabel(e.resource.meta.security, l);
+                                if (!existingLabel) {
+                                    // New label: attach policy objects from binding and add it
+                                    if (binding.policies.length > 0) {
+                                        l.policies = binding.policies.map(p => p.clone());
+                                    }
                                     e.resource?.meta?.security?.push(l);
+                                } else {
+                                    // Existing label: merge policies if this binding has policies
+                                    if (binding.policies.length > 0) {
+                                        if (!existingLabel.policies) {
+                                            existingLabel.policies = [];
+                                        }
+                                        // Add policies that aren't already present (deduplicate by ID)
+                                        binding.policies.forEach(policy => {
+                                            if (!existingLabel.policies!.some(existing => existing.id === policy.id)) {
+                                                existingLabel.policies!.push(policy.clone());
+                                            }
+                                        });
+                                    }
                                 }
                             });
                         });
@@ -122,11 +143,26 @@ export abstract class AbstractDataSharingEngine {
      * @param candidate - Candidate label to check
      * @returns True if duplicate (same system + code), false otherwise
      */
-    isDuplicateSecurityLabel(existing: Coding[], candidate: Coding): boolean {
+    isDuplicateSecurityLabel(existing: (FhirCoding | CodingWithPolicies)[], candidate: CodingWithPolicies): boolean {
         return existing.some(existingLabel => 
             existingLabel.system === candidate.system && 
             existingLabel.code === candidate.code
         );
+    }
+
+    /**
+     * Find an existing security label that matches the candidate.
+     * @param existing - Array of existing security labels
+     * @param candidate - Candidate label to find
+     * @returns The existing label if found, undefined otherwise
+     */
+    findSecurityLabel(existing: (FhirCoding | CodingWithPolicies)[], candidate: CodingWithPolicies): CodingWithPolicies | undefined {
+        const found = existing.find(existingLabel => 
+            existingLabel.system === candidate.system && 
+            existingLabel.code === candidate.code
+        );
+        // Cast to our CodingWithPolicies type if found (may already be CodingWithPolicies or FhirCoding)
+        return found as CodingWithPolicies | undefined;
     }
 
     // redactFromLabels(card: Card) {

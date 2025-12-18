@@ -49,6 +49,38 @@
             "description": "For the purposes of providing or supporting care."
         }
     ],
+    "policies": [
+        {
+            "id": "42cfr-part2-2.11",
+            "name": "General prohibitions on disclosure",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.11"
+        },
+        {
+            "id": "42cfr-part2-2.12",
+            "name": "Prohibition on redisclosure",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.12"
+        },
+        {
+            "id": "42cfr-part2-2.13",
+            "name": "Confidentiality restrictions and safeguards",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.13"
+        },
+        {
+            "id": "42cfr-part2-2.22",
+            "name": "Disclosures permitted with written consent",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.22"
+        },
+        {
+            "id": "42cfr-part2-2.31",
+            "name": "Form and content of written consent",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.31"
+        }
+    ],
     "rules": {
         "bindings": [
             {
@@ -78,7 +110,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": ["42cfr-part2-2.11", "42cfr-part2-2.12", "42cfr-part2-2.13"]
             },
             {
                 "id": "test-binding-depression",
@@ -107,7 +140,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": ["42cfr-part2-2.11", "42cfr-part2-2.22", "42cfr-part2-2.31"]
             },
             {
                 "id": "test-binding-mental",
@@ -141,7 +175,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": ["42cfr-part2-2.11", "42cfr-part2-2.13"]
             }
         ]
     }

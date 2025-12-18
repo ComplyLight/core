@@ -49,6 +49,13 @@
                 "$ref": "#/definitions/categoryOrPurpose"
             }
         },
+        "policies": {
+            "type": "array",
+            "description": "Array of policy definitions that reference regulatory controls, rules, or other policies",
+            "items": {
+                "$ref": "#/definitions/policy"
+            }
+        },
         "rules": {
             "type": "object",
             "description": "Optional rules object containing sensitivity rule bindings",
@@ -157,7 +164,8 @@
                 "labels",
                 "codeSets",
                 "category",
-                "purpose"
+                "purpose",
+                "policies"
             ],
             "properties": {
                 "id": {
@@ -189,6 +197,40 @@
                 "purpose": {
                     "type": "string",
                     "description": "Required reference to a purpose code from the purposes array"
+                },
+                "policies": {
+                    "type": "array",
+                    "description": "Required array of policy IDs that reference policies from the root policies array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "policy": {
+            "type": "object",
+            "required": [
+                "id",
+                "name",
+                "control_authority",
+                "control_id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique identifier for the policy"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Human-readable name of the policy"
+                },
+                "control_authority": {
+                    "type": "string",
+                    "description": "The authority that issued the control (e.g., 'CFR', 'HIPAA', 'State Law')"
+                },
+                "control_id": {
+                    "type": "string",
+                    "description": "The identifier of the control (e.g., '42 CFR Part 2 §2.11', 'HIPAA §164.512')"
                 }
             }
         }

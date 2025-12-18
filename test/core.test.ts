@@ -1,4 +1,4 @@
-import { Coding } from '../src/model/coding.js';
+import { CodingWithPolicies } from '../src/model/coding_with_policies.js';
 import { CodeSetCoding } from '../src/model/code_set_coding.js';
 import { CodeSet } from '../src/model/code_set.js';
 import { ConsentDecision } from '../src/model/consent_decision.js';
@@ -8,16 +8,16 @@ import { ConsentExtension } from '../src/model/consent_extension.js';
 
 describe('Model Classes', () => {
 
-    describe('Coding', () => {
+    describe('CodingWithPolicies', () => {
         test('should create instance with default empty values', () => {
-            const coding = new Coding();
+            const coding = new CodingWithPolicies();
             expect(coding.system).toBe('');
             expect(coding.code).toBe('');
             expect(coding.display).toBe('');
         });
 
         test('should allow setting properties', () => {
-            const coding = new Coding();
+            const coding = new CodingWithPolicies();
             coding.system = 'http://snomed.info/sct';
             coding.code = '12345';
             coding.display = 'Test Display';
@@ -121,7 +121,7 @@ describe('Model Classes', () => {
         test('should create instance with default values', () => {
             const binding = new Binding();
             expect(binding.id).toBe('');
-            expect(binding.basis).toBeInstanceOf(Coding);
+            expect(binding.basis).toBeInstanceOf(CodingWithPolicies);
             expect(binding.labels).toEqual([]);
             expect(binding.codeSets).toEqual([]);
         });
@@ -130,12 +130,12 @@ describe('Model Classes', () => {
             const binding = new Binding();
             binding.id = 'test-binding-123';
             
-            const basis = new Coding();
+            const basis = new CodingWithPolicies();
             basis.system = 'http://test.system';
             basis.code = 'TEST';
             binding.basis = basis;
             
-            const label = new Coding();
+            const label = new CodingWithPolicies();
             label.system = 'http://label.system';
             label.code = 'LABEL';
             binding.labels = [label];
@@ -154,12 +154,12 @@ describe('Model Classes', () => {
             const binding = Binding.fromTemplate();
             
             expect(binding.id).toMatch(/^binding-[a-f0-9]{6}$/);
-            expect(binding.basis).toBeInstanceOf(Coding);
+            expect(binding.basis).toBeInstanceOf(CodingWithPolicies);
             expect(binding.labels).toHaveLength(1);
             expect(binding.codeSets).toHaveLength(1);
         });
 
-        test('basisFromTemplate should return Coding with correct values', () => {
+        test('basisFromTemplate should return CodingWithPolicies with correct values', () => {
             const basis = Binding.basisFromTemplate();
             
             expect(basis.system).toBe('http://terminology.hl7.org/CodeSystem/v3-ActCode');
@@ -167,7 +167,7 @@ describe('Model Classes', () => {
             expect(basis.display).toBe('42 CFR Part2');
         });
 
-        test('labelFromTemplate should return Coding with correct values', () => {
+        test('labelFromTemplate should return CodingWithPolicies with correct values', () => {
             const label = Binding.labelFromTemplate();
             
             expect(label.system).toBe('http://terminology.hl7.org/CodeSystem/v3-ActCode');

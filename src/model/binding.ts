@@ -2,16 +2,18 @@
 
 import * as uuid from 'uuid';
 import { CodeSet } from './code_set.js';
-import { Coding } from './coding.js';
+import { CodingWithPolicies } from './coding_with_policies.js';
+import { Policy } from './policy.js';
 
 export class Binding {
 
     id: string = '';
-    basis: Coding = new Coding();
-    labels: Coding[] = [];
+    basis: CodingWithPolicies = new CodingWithPolicies();
+    labels: CodingWithPolicies[] = [];
     codeSets: CodeSet[] = [];
     category?: string; // Reference to category code (required in bindings)
     purpose?: string; // Reference to purpose code (required in bindings)
+    policies: Policy[] = []; // Required array of policy objects
 
     static fromTemplate() {
         const r = new Binding();
@@ -19,19 +21,20 @@ export class Binding {
         r.basis = Binding.basisFromTemplate();
         r.labels.push(Binding.labelFromTemplate());
         r.codeSets.push(Binding.codeSetFromTemplate());
+        r.policies = []; // Initialize empty policies array
         return r;
     }
 
-    static basisFromTemplate(): Coding {
-        const b = new Coding();
+    static basisFromTemplate(): CodingWithPolicies {
+        const b = new CodingWithPolicies();
         b.system = 'http://terminology.hl7.org/CodeSystem/v3-ActCode';
         b.code = '42CFRPart2';
         b.display = '42 CFR Part2';
         return b;
     }
 
-    static labelFromTemplate(): Coding {
-        const c = new Coding();
+    static labelFromTemplate(): CodingWithPolicies {
+        const c = new CodingWithPolicies();
         c.system = 'http://terminology.hl7.org/CodeSystem/v3-ActCode';
         c.code = 'X';
         c.display = 'Description of X';

@@ -23,13 +23,14 @@ export * from "./engine/console_data_sharing_engine.js";
 
 export * from "./model/code_set.js";
 export * from "./model/code_set_coding.js";
-export * from "./model/coding.js";
+export * from "./model/coding_with_policies.js";
 export * from "./model/consent_decision.js";
 export * from "./model/consent_extension.js";
 export * from "./model/engine_context.js";
 export * from "./model/permissions.js";
 export * from "./model/binding.js";
 export * from "./model/rules.js";
+export * from "./model/policy.js";
 
 export * from "./module_provider/abstract_data_segmentation_module_provider.js";
 export * from "./module_provider/dummy_data_segmentation_module_provider.js";

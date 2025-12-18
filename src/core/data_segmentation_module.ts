@@ -7,7 +7,8 @@ import { Rules } from "../model/rules.js";
 import { Binding } from "../model/binding.js";
 import { CodeSet } from "../model/code_set.js";
 import { CodeSetCoding } from "../model/code_set_coding.js";
-import { Coding as ModelCoding } from "../model/coding.js";
+import { CodingWithPolicies } from "../model/coding_with_policies.js";
+import { Policy } from "../model/policy.js";
 import { readFile } from "fs/promises";
 
 export class DataSegmentationModule {
@@ -19,6 +20,7 @@ export class DataSegmentationModule {
     public enabled: boolean = true;
     public categories: InformationCategorySetting[] = [];
     public purposes: InformationCategorySetting[] = [];
+    public policies: Policy[] = [];
     public rules?: Rules;
 
     constructor(id: string, name: string, version?: string, description?: string) {
@@ -301,6 +303,11 @@ export class DataSegmentationModule {
             cloned.purposes.push(clonedPur);
         });
         
+        // Deep copy policies
+        this.policies.forEach(pol => {
+            cloned.policies.push(pol.clone());
+        });
+        
         // Deep copy rules and bindings if present
         if (this.rules) {
             const clonedRules = new Rules();
@@ -310,18 +317,24 @@ export class DataSegmentationModule {
                 clonedBinding.category = binding.category;
                 clonedBinding.purpose = binding.purpose;
                 
+                // Clone policies (required, so always clone)
+                clonedBinding.policies = binding.policies.map(p => p.clone());
+                
                 // Clone basis
-                clonedBinding.basis = new ModelCoding();
+                clonedBinding.basis = new CodingWithPolicies();
                 clonedBinding.basis.system = binding.basis.system;
                 clonedBinding.basis.code = binding.basis.code;
                 clonedBinding.basis.display = binding.basis.display;
                 
                 // Clone labels
                 clonedBinding.labels = binding.labels.map(label => {
-                    const clonedLabel = new ModelCoding();
+                    const clonedLabel = new CodingWithPolicies();
                     clonedLabel.system = label.system;
                     clonedLabel.code = label.code;
                     clonedLabel.display = label.display;
+                    if (label.policies) {
+                        clonedLabel.policies = label.policies.map(p => p.clone());
+                    }
                     return clonedLabel;
                 });
                 
@@ -408,6 +421,14 @@ export class DataSegmentationModule {
             });
         }
         
+        // Load policies
+        if (json.policies) {
+            json.policies.forEach((policyJson: any) => {
+                const policy = Policy.fromJson(policyJson);
+                module.policies.push(policy);
+            });
+        }
+        
         // Load rules and bindings if present
         if (json.rules && json.rules.bindings) {
             const rules = new Rules();
@@ -417,9 +438,22 @@ export class DataSegmentationModule {
                 binding.category = bindingJson.category;
                 binding.purpose = bindingJson.purpose;
                 
+                // Load policies - resolve policy IDs to Policy objects
+                // Policies is required, so always initialize (empty array if not provided or invalid)
+                if (bindingJson.policies && Array.isArray(bindingJson.policies)) {
+                    binding.policies = bindingJson.policies
+                        .map((policyId: string) => {
+                            // Find the policy by ID in this module's policies
+                            return module.policies.find(p => p.id === policyId);
+                        })
+                        .filter((policy: Policy | undefined): policy is Policy => policy !== undefined);
+                } else {
+                    binding.policies = [];
+                }
+                
                 // Load basis
                 if (bindingJson.basis) {
-                    binding.basis = new ModelCoding();
+                    binding.basis = new CodingWithPolicies();
                     binding.basis.system = bindingJson.basis.system || '';
                     binding.basis.code = bindingJson.basis.code || '';
                     binding.basis.display = bindingJson.basis.display || '';
@@ -428,7 +462,7 @@ export class DataSegmentationModule {
                 // Load labels
                 if (bindingJson.labels) {
                     binding.labels = bindingJson.labels.map((labelJson: any) => {
-                        const label = new ModelCoding();
+                        const label = new CodingWithPolicies();
                         label.system = labelJson.system || '';
                         label.code = labelJson.code || '';
                         label.display = labelJson.display || '';

@@ -6,6 +6,7 @@ import { InformationCategorySetting } from '../src/core/information_category_set
 import { ConsoleDataSharingEngine } from '../src/engine/console_data_sharing_engine.js';
 import { TestDataSegmentationModuleProvider } from './test_module_provider.js';
 import { DataSharingEngineContext } from '../src/model/engine_context.js';
+import { Policy } from '../src/model/policy.js';
 import { Patient, Bundle, Condition, Observation } from 'fhir/r5.js';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -599,6 +600,135 @@ describe('Data Segmentation Module Registry', () => {
             const depressionLabel = securityLabels.find((label: any) => label.code === 'DEPRESSION');
             expect(anxietyLabel).toBeDefined();
             expect(depressionLabel).toBeDefined();
+        });
+    });
+
+    describe('Policies', () => {
+        test('should load policies from module JSON', async () => {
+            const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+
+            expect(module.policies).toBeDefined();
+            expect(module.policies.length).toBe(5);
+
+            // Verify specific 42 CFR Part 2 policies
+            const policy211 = module.policies.find(p => p.id === '42cfr-part2-2.11');
+            expect(policy211).toBeDefined();
+            expect(policy211?.name).toBe('General prohibitions on disclosure');
+            expect(policy211?.control_authority).toBe('CFR');
+            expect(policy211?.control_id).toBe('42 CFR Part 2 §2.11');
+
+            const policy212 = module.policies.find(p => p.id === '42cfr-part2-2.12');
+            expect(policy212).toBeDefined();
+            expect(policy212?.name).toBe('Prohibition on redisclosure');
+            expect(policy212?.control_authority).toBe('CFR');
+            expect(policy212?.control_id).toBe('42 CFR Part 2 §2.12');
+
+            const policy213 = module.policies.find(p => p.id === '42cfr-part2-2.13');
+            expect(policy213).toBeDefined();
+            expect(policy213?.name).toBe('Confidentiality restrictions and safeguards');
+            expect(policy213?.control_authority).toBe('CFR');
+            expect(policy213?.control_id).toBe('42 CFR Part 2 §2.13');
+
+            const policy222 = module.policies.find(p => p.id === '42cfr-part2-2.22');
+            expect(policy222).toBeDefined();
+            expect(policy222?.name).toBe('Disclosures permitted with written consent');
+            expect(policy222?.control_authority).toBe('CFR');
+            expect(policy222?.control_id).toBe('42 CFR Part 2 §2.22');
+
+            const policy231 = module.policies.find(p => p.id === '42cfr-part2-2.31');
+            expect(policy231).toBeDefined();
+            expect(policy231?.name).toBe('Form and content of written consent');
+            expect(policy231?.control_authority).toBe('CFR');
+            expect(policy231?.control_id).toBe('42 CFR Part 2 §2.31');
+        });
+
+        test('should load policy references in bindings', async () => {
+            const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+
+            expect(module.rules).toBeDefined();
+            expect(module.rules?.bindings.length).toBeGreaterThan(0);
+
+            // Verify anxiety binding has policies
+            const anxietyBinding = module.rules?.bindings.find(b => b.id === 'test-binding-anxiety');
+            expect(anxietyBinding).toBeDefined();
+            expect(anxietyBinding?.policies).toBeDefined();
+            expect(anxietyBinding?.policies?.length).toBe(3);
+            expect(anxietyBinding?.policies?.some(p => p.id === '42cfr-part2-2.11')).toBe(true);
+            expect(anxietyBinding?.policies?.some(p => p.id === '42cfr-part2-2.12')).toBe(true);
+            expect(anxietyBinding?.policies?.some(p => p.id === '42cfr-part2-2.13')).toBe(true);
+
+            // Verify depression binding has policies
+            const depressionBinding = module.rules?.bindings.find(b => b.id === 'test-binding-depression');
+            expect(depressionBinding).toBeDefined();
+            expect(depressionBinding?.policies).toBeDefined();
+            expect(depressionBinding?.policies?.length).toBe(3);
+            expect(depressionBinding?.policies?.some(p => p.id === '42cfr-part2-2.11')).toBe(true);
+            expect(depressionBinding?.policies?.some(p => p.id === '42cfr-part2-2.22')).toBe(true);
+            expect(depressionBinding?.policies?.some(p => p.id === '42cfr-part2-2.31')).toBe(true);
+
+            // Verify mental binding has policies
+            const mentalBinding = module.rules?.bindings.find(b => b.id === 'test-binding-mental');
+            expect(mentalBinding).toBeDefined();
+            expect(mentalBinding?.policies).toBeDefined();
+            expect(mentalBinding?.policies?.length).toBe(2);
+            expect(mentalBinding?.policies?.some(p => p.id === '42cfr-part2-2.11')).toBe(true);
+            expect(mentalBinding?.policies?.some(p => p.id === '42cfr-part2-2.13')).toBe(true);
+        });
+
+        test('should clone policies correctly', async () => {
+            const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+
+            const cloned = module.clone();
+
+            expect(cloned.policies.length).toBe(module.policies.length);
+            
+            // Verify policies are deep copied
+            const originalPolicy = module.policies[0];
+            const clonedPolicy = cloned.policies[0];
+            expect(clonedPolicy.id).toBe(originalPolicy.id);
+            expect(clonedPolicy.name).toBe(originalPolicy.name);
+            expect(clonedPolicy.control_authority).toBe(originalPolicy.control_authority);
+            expect(clonedPolicy.control_id).toBe(originalPolicy.control_id);
+            
+            // Verify they are different objects
+            expect(clonedPolicy).not.toBe(originalPolicy);
+        });
+
+        test('should clone binding policies correctly', async () => {
+            const modulePath = join(__dirname, 'modules/test-module-hierarchical-1.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+
+            const cloned = module.clone();
+
+            expect(cloned.rules).toBeDefined();
+            expect(cloned.rules?.bindings.length).toBe(module.rules?.bindings.length);
+
+            const originalBinding = module.rules?.bindings.find(b => b.id === 'test-binding-anxiety');
+            const clonedBinding = cloned.rules?.bindings.find(b => b.id === 'test-binding-anxiety');
+
+            expect(originalBinding?.policies).toBeDefined();
+            expect(clonedBinding?.policies).toBeDefined();
+            expect(clonedBinding?.policies?.length).toBe(originalBinding?.policies?.length);
+            expect(clonedBinding?.policies).toEqual(originalBinding?.policies);
+            
+            // Verify they are different arrays
+            expect(clonedBinding?.policies).not.toBe(originalBinding?.policies);
+        });
+
+        test('should handle bindings with empty policies array', async () => {
+            const modulePath = join(__dirname, 'modules/test-module-flat.json');
+            const module = await DataSegmentationModule.fromFile(modulePath);
+
+            expect(module.rules).toBeDefined();
+            if (module.rules && module.rules.bindings.length > 0) {
+                const binding = module.rules.bindings[0];
+                // Policies is required, so it should always be an array (may be empty)
+                expect(binding.policies).toBeDefined();
+                expect(Array.isArray(binding.policies)).toBe(true);
+            }
         });
     });
 
