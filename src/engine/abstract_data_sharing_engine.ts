@@ -3,7 +3,7 @@
 import { JSONPath } from "jsonpath-plus";
 import { Coding, Consent, ConsentProvision, FhirResource } from "fhir/r5.js";
 import { ConsentExtension } from "../model/consent_extension.js";
-import { AbstractSensitivityRuleProvider } from "../rules/abstract_sensitivity_rule_provider.js";
+import { AbstractDataSegmentationModuleProvider } from "../module_provider/abstract_data_segmentation_module_provider.js";
 import { DataSharingEngineContext } from "../model/engine_context.js";
 import { Card } from "../cds/cards/card.js";
 import { DenyCard } from "../cds/cards/deny_card.js";
@@ -17,7 +17,7 @@ export abstract class AbstractDataSharingEngine {
 
     protected moduleRegistry: DataSegmentationModuleRegistry;
 
-    constructor(public ruleProvider: AbstractSensitivityRuleProvider,
+    constructor(public moduleProvider: AbstractDataSegmentationModuleProvider,
         public threshold: number,
         public redaction_enabled: boolean,
         public create_audit_event: boolean,
@@ -93,20 +93,17 @@ export abstract class AbstractDataSharingEngine {
                     if (e.resource) {
                         // TODO This is a pretty naiive implementation, as it only looks for coded elements recursively without awareness of the context.
                         let codings = JSONPath({ path: "$..coding", json: e.resource }).flat();
-                        let srp = this.ruleProvider;
-                        let srp_rules = srp.applicableRulesForAll(codings, this.threshold);
-                        // rp.applySecurityLabelsToResource(rules, )
+                        let applicableBindings = this.moduleProvider.applicableBindingsForAll(codings, this.threshold);
                         if (!e.resource.meta) {
                             e.resource.meta = {};
                         }
                         if (!e.resource.meta.security) {
                             e.resource.meta.security = [];
                         }
-                        srp_rules.forEach(r => {
-                            let ob = { id: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION, parameters: { codes: r.labels } }
-                            // r.labels.map(l => l.);
+                        applicableBindings.forEach(binding => {
+                            let ob = { id: AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION, parameters: { codes: binding.labels } }
                             consentExtension.obligations.push(ob);
-                            r.labels.forEach(l => {
+                            binding.labels.forEach(l => {
                                 // Deduplicate: check if identical label already exists
                                 if (!this.isDuplicateSecurityLabel(e.resource.meta.security, l)) {
                                     e.resource?.meta?.security?.push(l);
@@ -137,7 +134,7 @@ export abstract class AbstractDataSharingEngine {
         let shouldRedact = false;
         if (resource?.meta?.security) {
             consentExtension.obligations.forEach(o => {
-                if (o.id.code == AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.code && o.id.system == AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.system) {
+                if (o.id.code == AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.code && o.id.system == AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.system) {
                     o.parameters.codes.forEach(code => {
                         resource!.meta!.security!.findIndex((c, i, all) => {
                             if (code.code == c.code && code.system == c.system) {
@@ -290,7 +287,7 @@ export abstract class AbstractDataSharingEngine {
                         let extension = new ConsentExtension(null);
                         let includeEnabled = consent?.decision == 'permit';
                         extension.obligations.push({
-                            id: { system: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.system, code: AbstractSensitivityRuleProvider.REDACTION_OBLIGATION.code },
+                            id: { system: AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.system, code: AbstractDataSegmentationModuleProvider.REDACTION_OBLIGATION.code },
                             parameters: {
                                 codes: tmpModule.allCategories()
                                     .filter(c => includeEnabled ? !c.enabled : c.enabled) // Only categories relevant to the consent

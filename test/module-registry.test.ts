@@ -4,7 +4,7 @@ import { DataSegmentationModule } from '../src/core/data_segmentation_module.js'
 import { DataSegmentationModuleRegistry } from '../src/core/data_segmentation_module_registry.js';
 import { InformationCategorySetting } from '../src/core/information_category_setting.js';
 import { ConsoleDataSharingEngine } from '../src/engine/console_data_sharing_engine.js';
-import { TestRuleProvider } from './test_rule_provider.js';
+import { TestDataSegmentationModuleProvider } from './test_module_provider.js';
 import { DataSharingEngineContext } from '../src/model/engine_context.js';
 import { Patient, Bundle, Condition, Observation } from 'fhir/r5.js';
 import { join, dirname } from 'path';
@@ -219,9 +219,9 @@ describe('Data Segmentation Module Registry', () => {
             registry.addModule(module1);
             registry.addModule(module2);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -257,9 +257,9 @@ describe('Data Segmentation Module Registry', () => {
             // Disable module1
             registry.disableModule('test-flat');
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -276,7 +276,7 @@ describe('Data Segmentation Module Registry', () => {
 
             // Re-enable module1
             registry.enableModule('test-flat');
-            ruleProvider.refreshRules(); // Refresh rules after enabling module
+            moduleProvider.refreshBindings(); // Refresh bindings after enabling module
             const test1CategoryAfterEnable = registry.findCategoryByCode('TEST1');
             expect(test1CategoryAfterEnable).toBeDefined();
         });
@@ -311,9 +311,9 @@ describe('Data Segmentation Module Registry', () => {
             const module = await DataSegmentationModule.fromFile(modulePath);
             registry.addModule(module);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -395,9 +395,9 @@ describe('Data Segmentation Module Registry', () => {
             registry.addModule(module1);
             registry.addModule(module2);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -458,9 +458,9 @@ describe('Data Segmentation Module Registry', () => {
             const module = await DataSegmentationModule.fromFile(modulePath);
             registry.addModule(module);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -532,9 +532,9 @@ describe('Data Segmentation Module Registry', () => {
             const module = await DataSegmentationModule.fromFile(modulePath);
             registry.addModule(module);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -610,9 +610,9 @@ describe('Data Segmentation Module Registry', () => {
             const module = await DataSegmentationModule.fromFile(modulePath);
             registry.addModule(module);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -677,9 +677,9 @@ describe('Data Segmentation Module Registry', () => {
             const module = await DataSegmentationModule.fromFile(modulePath);
             registry.addModule(module);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -728,9 +728,9 @@ describe('Data Segmentation Module Registry', () => {
             const module = await DataSegmentationModule.fromFile(modulePath);
             registry.addModule(module);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -762,9 +762,9 @@ describe('Data Segmentation Module Registry', () => {
             const module = await DataSegmentationModule.fromFile(modulePath);
             registry.addModule(module);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,
@@ -796,9 +796,9 @@ describe('Data Segmentation Module Registry', () => {
             const module = await DataSegmentationModule.fromFile(modulePath);
             registry.addModule(module);
 
-            const ruleProvider = new TestRuleProvider(registry);
+            const moduleProvider = new TestDataSegmentationModuleProvider(registry);
             const engine = new ConsoleDataSharingEngine(
-                ruleProvider,
+                moduleProvider,
                 0.5,
                 false,
                 false,

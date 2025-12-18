@@ -31,8 +31,5 @@ export * from "./model/permissions.js";
 export * from "./model/binding.js";
 export * from "./model/rules.js";
 
-export * from "./rules/abstract_sensitivity_rule_provider.js";
-export * from "./rules/dummy_rule_provider.js";
-
-export * from "./ui/toast_event.js";
-export * from "./ui/toast_event_types.js";
+export * from "./module_provider/abstract_data_segmentation_module_provider.js";
+export * from "./module_provider/dummy_data_segmentation_module_provider.js";
