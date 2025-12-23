@@ -1,15 +1,15 @@
 {
   "name": "@complylight/core",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "ComplyLight common class and CLI utility library.",
   "type": "module",
-  "main": "./build/src/index.js",
-  "types": "./build/src/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "exports": {
     ".": {
-      "import": "./build/src/index.js",
-      "types": "./build/src/index.d.ts",
-      "default": "./build/src/index.js"
+      "import": "./build/index.js",
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
     },
     "./package.json": "./package.json"
   },
