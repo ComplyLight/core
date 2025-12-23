@@ -1,0 +1,897 @@
+{
+    "$schema": "../schemas/data-segmentation-module.schema.json",
+    "id": "default-pediatrics",
+    "name": "Pediatric Healthcare Data Segmentation Module",
+    "version": "1.0.0",
+    "description": "Comprehensive data segmentation module for compliance with regulations governing pediatric healthcare data exchange, including HIPAA minor privacy provisions, state minor consent laws, mature minor doctrine, child abuse reporting requirements, and age-specific care considerations. This module provides hierarchical categories, policies mapped to specific regulatory sections, and extensive code set bindings using SNOMED CT (US Edition), CPT, ICD-10-CM, RxNorm, LOINC, and HL7 Medicinal Product Pediatric Use terminologies.",
+    "enabled": true,
+    "categories": [
+        {
+            "code": "PED-AGE",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Age-Based Pediatric Care",
+            "description": "Pediatric healthcare information organized by age groups"
+        },
+        {
+            "code": "PED-AGE-NEWBORN",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Newborn Care",
+            "description": "Healthcare information for newborns (0-27 days), including preterm and term newborns",
+            "parent": "PED-AGE"
+        },
+        {
+            "code": "PED-AGE-INFANT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Infant Care",
+            "description": "Healthcare information for infants and toddlers (28 days - 23 months)",
+            "parent": "PED-AGE"
+        },
+        {
+            "code": "PED-AGE-CHILD",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Child Care",
+            "description": "Healthcare information for children (2-11 years)",
+            "parent": "PED-AGE"
+        },
+        {
+            "code": "PED-AGE-ADOLESCENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Adolescent Care",
+            "description": "Healthcare information for adolescents (12-17 years)",
+            "parent": "PED-AGE"
+        },
+        {
+            "code": "PED-SENSITIVE",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Sensitive Services",
+            "description": "Sensitive healthcare services where minors may consent without parental involvement per state law"
+        },
+        {
+            "code": "PED-SENSITIVE-REPRODUCTIVE",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Reproductive Health Services",
+            "description": "Reproductive health services where minors may consent without parental involvement per state law",
+            "parent": "PED-SENSITIVE"
+        },
+        {
+            "code": "PED-SENSITIVE-MENTAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Mental Health Services",
+            "description": "Mental health services where minors may consent without parental involvement per state law",
+            "parent": "PED-SENSITIVE"
+        },
+        {
+            "code": "PED-SENSITIVE-SUBSTANCE",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Abuse Services",
+            "description": "Substance abuse treatment services where minors may consent without parental involvement per state law",
+            "parent": "PED-SENSITIVE"
+        },
+        {
+            "code": "PED-ABUSE-REPORTING",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Child Abuse and Neglect Reporting",
+            "description": "Records related to mandatory child abuse and neglect reporting under CAPTA"
+        },
+        {
+            "code": "PED-RESEARCH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Pediatric Research",
+            "description": "Pediatric research participation records requiring parental consent and minor assent per PREA/BPCA"
+        },
+        {
+            "code": "PED-MEDICATION-SAFETY",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Medication Safety",
+            "description": "Medication safety records including child-resistant packaging requirements per PPPA"
+        },
+        {
+            "code": "PED-FERPA-STUDENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Student Health Records",
+            "description": "Student health records maintained by educational institutions, protected under FERPA"
+        }
+    ],
+    "purposes": [
+        {
+            "code": "TREATMENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Treatment",
+            "description": "Disclosure for treatment purposes, generally requires parental consent for minors per HIPAA §164.502(g)"
+        },
+        {
+            "code": "PARENTAL-ACCESS",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Parental Access",
+            "description": "Parent or guardian access to minor records, default under HIPAA §164.502(g) with exceptions for state-authorized minor consent"
+        },
+        {
+            "code": "MINOR-CONSENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Minor Consent",
+            "description": "Disclosure authorized by minor consent without parental involvement, permitted under state law for specific services"
+        },
+        {
+            "code": "MATURE-MINOR",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Mature Minor Consent",
+            "description": "Disclosure authorized by mature minor consent, recognized under mature minor doctrine in applicable states"
+        },
+        {
+            "code": "ABUSE-REPORTING",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Child Abuse Reporting",
+            "description": "Mandatory child abuse and neglect reporting to authorities, required under CAPTA"
+        },
+        {
+            "code": "RESEARCH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Pediatric Research",
+            "description": "Pediatric research participation, requires parental consent and minor assent per PREA/BPCA"
+        },
+        {
+            "code": "EMERGENCY",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Emergency Care",
+            "description": "Emergency care without consent when necessary to prevent serious harm"
+        },
+        {
+            "code": "PUBLIC-HEALTH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Public Health Reporting",
+            "description": "Public health reporting for immunizations, communicable diseases, and public health surveillance"
+        }
+    ],
+    "policies": [
+        {
+            "id": "POLICY-PARENTAL-ACCESS-DEFAULT",
+            "name": "Parental Access Default",
+            "control_authority": "HIPAA",
+            "control_id": "HIPAA §164.502(g)"
+        },
+        {
+            "id": "POLICY-MINOR-CONSENT-EXCEPTION",
+            "name": "Minor Consent Exception",
+            "control_authority": "State Law",
+            "control_id": "State Minor Consent Laws"
+        },
+        {
+            "id": "POLICY-MATURE-MINOR-DOCTRINE",
+            "name": "Mature Minor Doctrine",
+            "control_authority": "State Law",
+            "control_id": "Mature Minor Doctrine"
+        },
+        {
+            "id": "POLICY-ABUSE-REPORTING-MANDATORY",
+            "name": "Mandatory Child Abuse Reporting",
+            "control_authority": "CAPTA",
+            "control_id": "Child Abuse Prevention and Treatment Act"
+        },
+        {
+            "id": "POLICY-PEDIATRIC-RESEARCH-CONSENT",
+            "name": "Pediatric Research Consent Requirements",
+            "control_authority": "FDAAA",
+            "control_id": "Pediatric Research Equity Act / Best Pharmaceuticals for Children Act"
+        },
+        {
+            "id": "POLICY-MEDICATION-SAFETY-PPPA",
+            "name": "Medication Safety and Child-Resistant Packaging",
+            "control_authority": "PPPA",
+            "control_id": "Poison Prevention Packaging Act of 1970"
+        },
+        {
+            "id": "POLICY-REPRODUCTIVE-CONFIDENTIALITY",
+            "name": "Confidential Reproductive Health Services",
+            "control_authority": "State Law",
+            "control_id": "State Reproductive Health Minor Consent Laws"
+        },
+        {
+            "id": "POLICY-MENTAL-HEALTH-CONFIDENTIALITY",
+            "name": "Confidential Mental Health Services",
+            "control_authority": "State Law",
+            "control_id": "State Mental Health Minor Consent Laws"
+        },
+        {
+            "id": "POLICY-SUBSTANCE-ABUSE-CONFIDENTIALITY",
+            "name": "Confidential Substance Abuse Services",
+            "control_authority": "State Law",
+            "control_id": "State Substance Abuse Minor Consent Laws"
+        },
+        {
+            "id": "POLICY-EMERGENCY-CARE-CONSENT",
+            "name": "Emergency Care Without Consent",
+            "control_authority": "State Law",
+            "control_id": "State Emergency Care Laws"
+        },
+        {
+            "id": "POLICY-FERPA-STUDENT-HEALTH",
+            "name": "FERPA Student Health Records",
+            "control_authority": "FERPA",
+            "control_id": "Family Educational Rights and Privacy Act"
+        },
+        {
+            "id": "POLICY-PARENTAL-ACCESS-EXCEPTION",
+            "name": "Parental Access Exception",
+            "control_authority": "HIPAA",
+            "control_id": "HIPAA §164.502(g)(3)"
+        }
+    ],
+    "rules": {
+        "bindings": [
+            {
+                "id": "binding-ped-newborn-treatment",
+                "category": "PED-AGE-NEWBORN",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-PARENTAL-ACCESS-DEFAULT",
+                    "POLICY-MEDICATION-SAFETY-PPPA"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-NEWBORN",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "27042001",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "28163009",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "410605003",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "HL7-PED-USE-NEWBORN",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/CodeSystem/medicinal-product-pediatric-use",
+                                "code": "PretermNewborn",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/CodeSystem/medicinal-product-pediatric-use",
+                                "code": "TermNewborn",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-NEWBORN-CARE",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99460",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99461",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99462",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-infant-treatment",
+                "category": "PED-AGE-INFANT",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-PARENTAL-ACCESS-DEFAULT",
+                    "POLICY-MEDICATION-SAFETY-PPPA"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-INFANT",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "3654006",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "32835006",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "HL7-PED-USE-INFANT",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/CodeSystem/medicinal-product-pediatric-use",
+                                "code": "Infants",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-WELL-CHILD-INFANT",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99381",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99382",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99391",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99392",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "LOINC-GROWTH-INFANT",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "8302-2",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "29463-7",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "39156-5",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-child-treatment",
+                "category": "PED-AGE-CHILD",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-PARENTAL-ACCESS-DEFAULT",
+                    "POLICY-MEDICATION-SAFETY-PPPA"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-CHILD",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "133931009",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "410604004",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "HL7-PED-USE-CHILD",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/CodeSystem/medicinal-product-pediatric-use",
+                                "code": "Children",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-WELL-CHILD",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99383",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99384",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99393",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99394",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "LOINC-GROWTH-CHILD",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "8302-2",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "29463-7",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "39156-5",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "LOINC-DEVELOPMENTAL-SCREENING",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "72514-3",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "76513-1",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-adolescent-treatment",
+                "category": "PED-AGE-ADOLESCENT",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-PARENTAL-ACCESS-DEFAULT",
+                    "POLICY-MATURE-MINOR-DOCTRINE",
+                    "POLICY-MEDICATION-SAFETY-PPPA"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-ADOLESCENT",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "133937003",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "410603005",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "HL7-PED-USE-ADOLESCENT",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/CodeSystem/medicinal-product-pediatric-use",
+                                "code": "Adolescents",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-WELL-CHILD-ADOLESCENT",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99385",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99395",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-reproductive-minor-consent",
+                "category": "PED-SENSITIVE-REPRODUCTIVE",
+                "purpose": "MINOR-CONSENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-REPRODUCTIVE-CONFIDENTIALITY",
+                    "POLICY-MINOR-CONSENT-EXCEPTION",
+                    "POLICY-PARENTAL-ACCESS-EXCEPTION"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-REPRODUCTIVE",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "182836005",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "182837001",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-REPRODUCTIVE",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99213",
+                                "confidence": 0.5
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99214",
+                                "confidence": 0.5
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-mental-health-minor-consent",
+                "category": "PED-SENSITIVE-MENTAL",
+                "purpose": "MINOR-CONSENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-MENTAL-HEALTH-CONFIDENTIALITY",
+                    "POLICY-MINOR-CONSENT-EXCEPTION",
+                    "POLICY-PARENTAL-ACCESS-EXCEPTION"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-MENTAL-HEALTH",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "13746004",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "64905009",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "35489007",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "47505003",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-MENTAL-HEALTH",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90834",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90837",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90847",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-abuse-reporting",
+                "category": "PED-ABUSE-REPORTING",
+                "purpose": "ABUSE-REPORTING",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-ABUSE-REPORTING-MANDATORY"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-ABUSE",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "276721009",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "276722002",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "276723007",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-ABUSE",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "T74.01XA",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "T74.02XA",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "T74.12XA",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-research",
+                "category": "PED-RESEARCH",
+                "purpose": "RESEARCH",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-PEDIATRIC-RESEARCH-CONSENT"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-RESEARCH",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "182836005",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-medication-safety",
+                "category": "PED-MEDICATION-SAFETY",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-MEDICATION-SAFETY-PPPA",
+                    "POLICY-PARENTAL-ACCESS-DEFAULT"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "RXNORM-PEDIATRIC-MEDICATIONS",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "6882",
+                                "confidence": 0.5
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-ferpa-student",
+                "category": "PED-FERPA-STUDENT",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-FERPA-STUDENT-HEALTH"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-STUDENT-HEALTH",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "182836005",
+                                "confidence": 0.5
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-ped-parental-access",
+                "category": "PED-AGE",
+                "purpose": "PARENTAL-ACCESS",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "PED",
+                    "display": "Pediatric"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "PED",
+                        "display": "pediatric information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-PARENTAL-ACCESS-DEFAULT",
+                    "POLICY-PARENTAL-ACCESS-EXCEPTION"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-PEDIATRIC-ALL",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "27042001",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "3654006",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "133931009",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "133937003",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+

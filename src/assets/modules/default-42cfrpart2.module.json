@@ -1,0 +1,1595 @@
+{
+    "$schema": "../schemas/data-segmentation-module.schema.json",
+    "id": "default-42cfrpart2",
+    "name": "42 CFR Part 2 Substance Use Disorder Compliance Module",
+    "version": "1.0.0",
+    "description": "Comprehensive data segmentation module for compliance with 42 CFR Part 2 regulations governing the confidentiality of substance use disorder (SUD) patient records. This module provides hierarchical categories, policies mapped to specific CFR sections, and extensive code set bindings using SNOMED CT (US Edition), CPT, ICD-10-CM (for DSM codes), RxNorm, and LOINC terminologies.",
+    "enabled": true,
+    "categories": [
+        {
+            "code": "SUD-CLINICAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use Disorder Clinical Information",
+            "description": "Clinical information related to substance use disorder diagnosis, treatment, medications, assessments, and laboratory tests protected under 42 CFR Part 2"
+        },
+        {
+            "code": "SUD-DIAGNOSIS",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use Disorder Diagnoses",
+            "description": "Diagnoses, assessments, and clinical determinations related to substance use disorders",
+            "parent": "SUD-CLINICAL"
+        },
+        {
+            "code": "SUD-TREATMENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use Disorder Treatment",
+            "description": "Treatment plans, progress notes, therapy records, and intervention documentation",
+            "parent": "SUD-CLINICAL"
+        },
+        {
+            "code": "SUD-MEDICATION",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use Disorder Medications",
+            "description": "Medications prescribed, administered, or dispensed for substance use disorder treatment",
+            "parent": "SUD-CLINICAL"
+        },
+        {
+            "code": "SUD-ASSESSMENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use Disorder Assessments",
+            "description": "Screening, assessment, and evaluation records for substance use disorders",
+            "parent": "SUD-CLINICAL"
+        },
+        {
+            "code": "SUD-LAB",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use Disorder Laboratory Tests",
+            "description": "Laboratory tests, drug screens, and biomarker tests related to substance use",
+            "parent": "SUD-CLINICAL"
+        },
+        {
+            "code": "SUD-ADMINISTRATIVE",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use Disorder Administrative Records",
+            "description": "Administrative records including consent documentation and disclosure tracking protected under 42 CFR Part 2"
+        },
+        {
+            "code": "SUD-CONSENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use Disorder Consent Documentation",
+            "description": "Patient consent forms, revocation records, and consent-related documentation",
+            "parent": "SUD-ADMINISTRATIVE"
+        },
+        {
+            "code": "SUD-DISCLOSURE",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Substance Use Disorder Disclosure Records",
+            "description": "Records of disclosures, audit logs, and tracking of information sharing",
+            "parent": "SUD-ADMINISTRATIVE"
+        }
+    ],
+    "purposes": [
+        {
+            "code": "TREATMENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Treatment",
+            "description": "Disclosure for treatment purposes, requires patient consent per 42 CFR Part 2 §2.31"
+        },
+        {
+            "code": "PAYMENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Payment and Healthcare Operations",
+            "description": "Disclosure for payment and healthcare operations, requires patient consent per 42 CFR Part 2 §2.31"
+        },
+        {
+            "code": "RESEARCH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Scientific Research",
+            "description": "Disclosure for scientific research purposes, may be permitted without consent under 42 CFR Part 2 §2.52 with IRB approval"
+        },
+        {
+            "code": "EMERGENCY",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Medical Emergency",
+            "description": "Disclosure in medical emergencies without patient consent, permitted under 42 CFR Part 2 §2.51"
+        },
+        {
+            "code": "AUDIT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Audit and Evaluation",
+            "description": "Disclosure for management audits, financial audits, and program evaluation without patient consent, permitted under 42 CFR Part 2 §2.53"
+        },
+        {
+            "code": "LEGAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Court Order",
+            "description": "Disclosure pursuant to court order, permitted under 42 CFR Part 2 §2.61"
+        }
+    ],
+    "policies": [
+        {
+            "id": "POLICY-CONSENT-REQUIRED",
+            "name": "Consent Required for Disclosure",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.31"
+        },
+        {
+            "id": "POLICY-CONSENT-FORM-CONTENT",
+            "name": "Consent Form Content Requirements",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.32"
+        },
+        {
+            "id": "POLICY-CONSENT-REVOCATION",
+            "name": "Revocation of Consent",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.33"
+        },
+        {
+            "id": "POLICY-REDISCLOSURE-PROHIBITION",
+            "name": "Prohibition on Redisclosure",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.12"
+        },
+        {
+            "id": "POLICY-EMERGENCY-DISCLOSURE",
+            "name": "Medical Emergency Disclosure Exception",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.51"
+        },
+        {
+            "id": "POLICY-RESEARCH-DISCLOSURE",
+            "name": "Scientific Research Disclosure Exception",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.52"
+        },
+        {
+            "id": "POLICY-AUDIT-DISCLOSURE",
+            "name": "Audit and Evaluation Disclosure Exception",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.53"
+        },
+        {
+            "id": "POLICY-COURT-ORDER-DISCLOSURE",
+            "name": "Court Order Disclosure Exception",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.61"
+        },
+        {
+            "id": "POLICY-CRIME-REPORTING",
+            "name": "Crime on Program Premises Reporting Exception",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.62"
+        },
+        {
+            "id": "POLICY-CHILD-ABUSE-REPORTING",
+            "name": "Child Abuse and Neglect Reporting Exception",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.63"
+        },
+        {
+            "id": "POLICY-CONFIDENTIALITY-SAFEGUARDS",
+            "name": "Confidentiality Restrictions and Safeguards",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.13"
+        },
+        {
+            "id": "POLICY-GENERAL-PROHIBITION",
+            "name": "General Prohibition on Disclosure",
+            "control_authority": "CFR",
+            "control_id": "42 CFR Part 2 §2.11"
+        }
+    ],
+    "rules": {
+        "bindings": [
+            {
+                "id": "binding-sud-diagnosis-treatment",
+                "category": "SUD-DIAGNOSIS",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-SUD-DIAGNOSES-ALCOHOL",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "66590003",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "15167005",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "22828008",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "SNOMED-SUD-DIAGNOSES-OPIOID",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "20986006",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "110483000",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191816009",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "SNOMED-SUD-DIAGNOSES-STIMULANT",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "75544000",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191818005",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191819002",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "SNOMED-SUD-DIAGNOSES-CANNABIS",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191899004",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191900009",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-ALCOHOL",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F10.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F10.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F10.90",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-OPIOID",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F11.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F11.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F11.90",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-CANNABIS",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F12.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F12.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F12.90",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-SEDATIVE",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F13.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F13.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F13.90",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-COCAINE",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F14.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F14.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F14.90",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-OTHER-STIMULANT",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F15.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F15.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F15.90",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-HALLUCINOGEN",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F16.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F16.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F16.90",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-INHALANT",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F18.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F18.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F18.90",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-OTHER",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F19.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F19.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F19.90",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-diagnosis-payment",
+                "category": "SUD-DIAGNOSIS",
+                "purpose": "PAYMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-SUD-DIAGNOSES-ALCOHOL",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "66590003",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "15167005",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "22828008",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "SNOMED-SUD-DIAGNOSES-OPIOID",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "20986006",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "110483000",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191816009",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-ALL",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F10.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F10.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F11.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F11.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F12.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F12.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F13.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F13.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F14.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F14.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F15.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F15.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F16.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F16.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F18.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F18.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F19.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F19.20",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-diagnosis-research",
+                "category": "SUD-DIAGNOSIS",
+                "purpose": "RESEARCH",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-RESEARCH-DISCLOSURE",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-SUD-DIAGNOSES-ALL",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "66590003",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "15167005",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "22828008",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "20986006",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "110483000",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191816009",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "75544000",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191818005",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191819002",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191899004",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "191900009",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-ALL",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F10.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F10.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F11.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F11.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F12.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F12.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F13.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F13.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F14.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F14.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F15.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F15.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F16.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F16.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F18.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F18.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F19.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F19.20",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-diagnosis-emergency",
+                "category": "SUD-DIAGNOSIS",
+                "purpose": "EMERGENCY",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-EMERGENCY-DISCLOSURE",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "SNOMED-SUD-DIAGNOSES-ALL",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "66590003",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "20986006",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "75544000",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-SUD-ALL",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F10.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F10.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F11.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F11.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F12.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F12.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F13.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F13.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F14.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F14.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F15.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F15.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F16.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F16.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F18.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F18.20",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F19.10",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "F19.20",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-treatment-treatment",
+                "category": "SUD-TREATMENT",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-SUD-SCREENING",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99408",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99409",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-SUD-TREATMENT",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90834",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90837",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90847",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "H0031",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "H0032",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "H0033",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "H0034",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "H0035",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "H0036",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "H0037",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "H0038",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "H0039",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "SNOMED-SUD-TREATMENT",
+                        "codes": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "182836005",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "182837001",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "182838006",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-medication-treatment",
+                "category": "SUD-MEDICATION",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "RXNORM-METHADONE",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "6882",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "1248767",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "RXNORM-BUPRENORPHINE",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "1049623",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "1248767",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "RXNORM-NALTREXONE",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "16592",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "104931",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "RXNORM-ACAMPROSATE",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "312961",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "RXNORM-DISULFIRAM",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "5640",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-assessment-treatment",
+                "category": "SUD-ASSESSMENT",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "LOINC-SUD-SCREENING",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "74013-4",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "74019-1",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "72166-2",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-SUD-SCREENING",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99408",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99409",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-lab-treatment",
+                "category": "SUD-LAB",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "LOINC-DRUG-TESTING",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11041-1",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11042-9",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11043-7",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11044-5",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11045-2",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "LOINC-ALCOHOL-TESTING",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "5639-0",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "5640-8",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "5641-6",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-treatment-payment",
+                "category": "SUD-TREATMENT",
+                "purpose": "PAYMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-SUD-ALL",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99408",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99409",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90834",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90837",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90847",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-treatment-research",
+                "category": "SUD-TREATMENT",
+                "purpose": "RESEARCH",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-RESEARCH-DISCLOSURE",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-SUD-ALL",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99408",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99409",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90834",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90837",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "90847",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-medication-payment",
+                "category": "SUD-MEDICATION",
+                "purpose": "PAYMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "RXNORM-SUD-MEDICATIONS-ALL",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "6882",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "1049623",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "16592",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "312961",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "5640",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-assessment-payment",
+                "category": "SUD-ASSESSMENT",
+                "purpose": "PAYMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "LOINC-SUD-SCREENING-ALL",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "74013-4",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "74019-1",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "72166-2",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-SUD-SCREENING-ALL",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99408",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "99409",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-sud-lab-payment",
+                "category": "SUD-LAB",
+                "purpose": "PAYMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "42CFRPart2",
+                    "display": "42 CFR Part 2"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SUD",
+                        "display": "substance abuse information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED",
+                    "POLICY-CONSENT-FORM-CONTENT",
+                    "POLICY-REDISCLOSURE-PROHIBITION",
+                    "POLICY-CONFIDENTIALITY-SAFEGUARDS"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "LOINC-DRUG-TESTING-ALL",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11041-1",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11042-9",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11043-7",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11044-5",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "11045-2",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "LOINC-ALCOHOL-TESTING-ALL",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "5639-0",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "5640-8",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "5641-6",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+

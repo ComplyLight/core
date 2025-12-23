@@ -1,6 +1,6 @@
 {
   "name": "@complylight/core",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "ComplyLight common class and CLI utility library.",
   "type": "module",
   "main": "./build/src/index.js",

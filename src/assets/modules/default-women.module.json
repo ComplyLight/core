@@ -1,0 +1,884 @@
+{
+    "$schema": "../schemas/data-segmentation-module.schema.json",
+    "id": "default-women",
+    "name": "Women's Health Data Segmentation Module",
+    "version": "1.0.0",
+    "description": "Comprehensive data segmentation module for compliance with regulations governing women's health data exchange, including HIPAA reproductive health privacy provisions (2024), state reproductive privacy laws (California, Washington, Virginia, Illinois), Title X confidentiality requirements, and protections for sensitive women's health services. This module provides hierarchical categories, policies mapped to specific regulatory sections, and extensive code set bindings using SNOMED CT (US Edition), CPT, ICD-10-CM, RxNorm, and LOINC terminologies.",
+    "enabled": true,
+    "categories": [
+        {
+            "code": "WOMEN-REPRODUCTIVE",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Reproductive Health Services",
+            "description": "Reproductive health services including abortion, contraception, fertility treatment, and pregnancy loss care, protected under HIPAA reproductive health privacy rule and state laws"
+        },
+        {
+            "code": "WOMEN-REPRODUCTIVE-ABORTION",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Abortion Services",
+            "description": "Abortion services and related care, protected under HIPAA reproductive health privacy rule and state laws",
+            "parent": "WOMEN-REPRODUCTIVE"
+        },
+        {
+            "code": "WOMEN-REPRODUCTIVE-CONTRACEPTION",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Contraception Services",
+            "description": "Contraception services and prescriptions, protected under state reproductive privacy laws",
+            "parent": "WOMEN-REPRODUCTIVE"
+        },
+        {
+            "code": "WOMEN-REPRODUCTIVE-FERTILITY",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Fertility Treatment",
+            "description": "Fertility treatment and assisted reproduction services",
+            "parent": "WOMEN-REPRODUCTIVE"
+        },
+        {
+            "code": "WOMEN-REPRODUCTIVE-MISCARRIAGE",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Miscarriage and Pregnancy Loss",
+            "description": "Miscarriage and pregnancy loss care, protected under HIPAA reproductive health privacy rule",
+            "parent": "WOMEN-REPRODUCTIVE"
+        },
+        {
+            "code": "WOMEN-MATERNAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Maternal Health Services",
+            "description": "Maternal health services including prenatal, perinatal, and postnatal care"
+        },
+        {
+            "code": "WOMEN-MATERNAL-PRENATAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Prenatal Care",
+            "description": "Prenatal care and pregnancy management",
+            "parent": "WOMEN-MATERNAL"
+        },
+        {
+            "code": "WOMEN-MATERNAL-PERINATAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Labor and Delivery",
+            "description": "Labor and delivery care",
+            "parent": "WOMEN-MATERNAL"
+        },
+        {
+            "code": "WOMEN-MATERNAL-POSTNATAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Postpartum Care",
+            "description": "Postpartum care and follow-up",
+            "parent": "WOMEN-MATERNAL"
+        },
+        {
+            "code": "WOMEN-GYNECOLOGICAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Gynecological Services",
+            "description": "Gynecological examinations, conditions, and treatments"
+        },
+        {
+            "code": "WOMEN-BREAST-HEALTH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Breast Health",
+            "description": "Breast health screenings, mammography, and breast care"
+        },
+        {
+            "code": "WOMEN-SEXUAL-HEALTH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Sexual Health Services",
+            "description": "Sexual health services including STI testing and treatment"
+        },
+        {
+            "code": "WOMEN-GENDER-AFFIRMING",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Gender-Affirming Care",
+            "description": "Gender-affirming care services, protected under state laws"
+        }
+    ],
+    "purposes": [
+        {
+            "code": "TREATMENT",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Treatment",
+            "description": "Disclosure for treatment purposes, with enhanced protections for reproductive health per HIPAA reproductive health privacy rule"
+        },
+        {
+            "code": "CONSENT-REQUIRED",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Consent Required",
+            "description": "Disclosure requiring explicit patient consent per state reproductive privacy laws (Washington MHMDA, Virginia SB 754)"
+        },
+        {
+            "code": "TITLE-X-CONFIDENTIAL",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Title X Confidentiality",
+            "description": "Title X family planning program confidentiality requirements"
+        },
+        {
+            "code": "CROSS-STATE-PROTECTED",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Cross-State Protection",
+            "description": "Protected from cross-state investigations regarding lawful reproductive care per HIPAA reproductive health privacy rule"
+        },
+        {
+            "code": "EMPLOYMENT-PDA",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Employment Context",
+            "description": "Pregnancy-related information in employment context, protected under Pregnancy Discrimination Act"
+        },
+        {
+            "code": "PUBLIC-HEALTH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Public Health Reporting",
+            "description": "Public health reporting with reproductive health exclusions where applicable per state law"
+        },
+        {
+            "code": "RESEARCH",
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "name": "Research",
+            "description": "Research purposes with enhanced consent requirements for reproductive health"
+        }
+    ],
+    "policies": [
+        {
+            "id": "POLICY-REPRODUCTIVE-PRIVACY-HIPAA",
+            "name": "HIPAA Reproductive Healthcare Privacy Rule",
+            "control_authority": "HIPAA",
+            "control_id": "HIPAA Reproductive Healthcare Privacy Rule (2024)"
+        },
+        {
+            "id": "POLICY-CONSENT-REQUIRED-REPRODUCTIVE",
+            "name": "Consent Required for Reproductive Health Data",
+            "control_authority": "State Law",
+            "control_id": "State Reproductive Privacy Laws (Washington MHMDA, Virginia SB 754)"
+        },
+        {
+            "id": "POLICY-CROSS-STATE-PROTECTION",
+            "name": "Cross-State Protection from Investigations",
+            "control_authority": "HIPAA",
+            "control_id": "HIPAA Reproductive Healthcare Privacy Rule (2024) - Cross-State Protection"
+        },
+        {
+            "id": "POLICY-TITLE-X-CONFIDENTIALITY",
+            "name": "Title X Family Planning Confidentiality",
+            "control_authority": "Title X",
+            "control_id": "Title X Family Planning Program"
+        },
+        {
+            "id": "POLICY-ABORTION-PRIVACY",
+            "name": "Abortion Services Privacy Protections",
+            "control_authority": "State Law",
+            "control_id": "State Abortion Privacy Laws (California AB 352, AB 254, SB 345)"
+        },
+        {
+            "id": "POLICY-CONTRACEPTION-PRIVACY",
+            "name": "Contraception Services Privacy Protections",
+            "control_authority": "State Law",
+            "control_id": "State Contraception Privacy Laws"
+        },
+        {
+            "id": "POLICY-FERTILITY-PRIVACY",
+            "name": "Fertility Treatment Privacy Protections",
+            "control_authority": "State Law",
+            "control_id": "State Fertility Treatment Privacy Laws"
+        },
+        {
+            "id": "POLICY-GENDER-AFFIRMING-PRIVACY",
+            "name": "Gender-Affirming Care Privacy Protections",
+            "control_authority": "State Law",
+            "control_id": "State Gender-Affirming Care Privacy Laws (California, Illinois HB 4664)"
+        },
+        {
+            "id": "POLICY-PREGNANCY-DISCRIMINATION",
+            "name": "Pregnancy Discrimination Act Protections",
+            "control_authority": "PDA",
+            "control_id": "Pregnancy Discrimination Act"
+        },
+        {
+            "id": "POLICY-DATA-SEGMENTATION-REPRODUCTIVE",
+            "name": "Data Segmentation for Reproductive Health",
+            "control_authority": "State Law",
+            "control_id": "State Data Segmentation Requirements (California)"
+        },
+        {
+            "id": "POLICY-HIE-EXCLUSION",
+            "name": "HIE Exclusion for Reproductive Health",
+            "control_authority": "State Law",
+            "control_id": "State HIE Exclusion Laws (California AB 352)"
+        }
+    ],
+    "rules": {
+        "bindings": [
+            {
+                "id": "binding-women-abortion-consent-required",
+                "category": "WOMEN-REPRODUCTIVE-ABORTION",
+                "purpose": "CONSENT-REQUIRED",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "REPRODUCTIVE",
+                    "display": "Reproductive Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "REPRODUCTIVE",
+                        "display": "reproductive health information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-ABORTION-PRIVACY",
+                    "POLICY-CONSENT-REQUIRED-REPRODUCTIVE",
+                    "POLICY-CROSS-STATE-PROTECTION",
+                    "POLICY-HIE-EXCLUSION"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-ABORTION-PROCEDURES",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59840",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59841",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59850",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59851",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59852",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-ABORTION",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "O04.9",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z33.2",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-abortion-cross-state-protected",
+                "category": "WOMEN-REPRODUCTIVE-ABORTION",
+                "purpose": "CROSS-STATE-PROTECTED",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "REPRODUCTIVE",
+                    "display": "Reproductive Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "REPRODUCTIVE",
+                        "display": "reproductive health information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-REPRODUCTIVE-PRIVACY-HIPAA",
+                    "POLICY-CROSS-STATE-PROTECTION",
+                    "POLICY-ABORTION-PRIVACY"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-ABORTION-ALL",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59840",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59841",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59850",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59851",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59852",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-contraception-consent-required",
+                "category": "WOMEN-REPRODUCTIVE-CONTRACEPTION",
+                "purpose": "CONSENT-REQUIRED",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "REPRODUCTIVE",
+                    "display": "Reproductive Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "REPRODUCTIVE",
+                        "display": "reproductive health information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONTRACEPTION-PRIVACY",
+                    "POLICY-CONSENT-REQUIRED-REPRODUCTIVE",
+                    "POLICY-TITLE-X-CONFIDENTIALITY"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "RXNORM-CONTRACEPTIVES",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "104990",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "104991",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "104992",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "CPT-CONTRACEPTION",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "11976",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "11977",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "11981",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "11982",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-contraception-title-x",
+                "category": "WOMEN-REPRODUCTIVE-CONTRACEPTION",
+                "purpose": "TITLE-X-CONFIDENTIAL",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "REPRODUCTIVE",
+                    "display": "Reproductive Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "REPRODUCTIVE",
+                        "display": "reproductive health information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-TITLE-X-CONFIDENTIALITY",
+                    "POLICY-CONTRACEPTION-PRIVACY"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "RXNORM-CONTRACEPTIVES-ALL",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "104990",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "104991",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "104992",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-fertility-consent-required",
+                "category": "WOMEN-REPRODUCTIVE-FERTILITY",
+                "purpose": "CONSENT-REQUIRED",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "REPRODUCTIVE",
+                    "display": "Reproductive Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "REPRODUCTIVE",
+                        "display": "reproductive health information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-FERTILITY-PRIVACY",
+                    "POLICY-CONSENT-REQUIRED-REPRODUCTIVE"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-FERTILITY",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "58970",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "58974",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "58976",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "RXNORM-FERTILITY",
+                        "codes": [
+                            {
+                                "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                                "code": "312961",
+                                "confidence": 0.5
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-miscarriage-cross-state-protected",
+                "category": "WOMEN-REPRODUCTIVE-MISCARRIAGE",
+                "purpose": "CROSS-STATE-PROTECTED",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "REPRODUCTIVE",
+                    "display": "Reproductive Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "REPRODUCTIVE",
+                        "display": "reproductive health information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-REPRODUCTIVE-PRIVACY-HIPAA",
+                    "POLICY-CROSS-STATE-PROTECTION"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "ICD10-MISCARRIAGE",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "O02.0",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "O02.1",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "O03.9",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-prenatal-treatment",
+                "category": "WOMEN-MATERNAL-PRENATAL",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "MATERNAL",
+                    "display": "Maternal Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "MATERNAL",
+                        "display": "maternal health information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-PREGNANCY-DISCRIMINATION"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-PRENATAL-CARE",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59425",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "59426",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "LOINC-PREGNANCY-TESTS",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "2106-3",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "2339-0",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "33747-0",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "LOINC-PRENATAL",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "55284-4",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "55277-8",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-PREGNANCY",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z34.90",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z34.91",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z34.92",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z34.93",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-prenatal-employment",
+                "category": "WOMEN-MATERNAL-PRENATAL",
+                "purpose": "EMPLOYMENT-PDA",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "MATERNAL",
+                    "display": "Maternal Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "MATERNAL",
+                        "display": "maternal health information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-PREGNANCY-DISCRIMINATION"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "ICD10-PREGNANCY-ALL",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z34.90",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z34.91",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z34.92",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z34.93",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-gynecological-treatment",
+                "category": "WOMEN-GYNECOLOGICAL",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "GYN",
+                    "display": "Gynecological"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "GYN",
+                        "display": "gynecological information sensitivity"
+                    }
+                ],
+                "policies": [],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-GYNECOLOGICAL",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "57410",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "57420",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "57452",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "57455",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "ICD10-GYNECOLOGICAL",
+                        "codes": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "N80.9",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "N83.0",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "N84.0",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-breast-health-treatment",
+                "category": "WOMEN-BREAST-HEALTH",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "BREAST",
+                    "display": "Breast Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "BREAST",
+                        "display": "breast health information sensitivity"
+                    }
+                ],
+                "policies": [],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-MAMMOGRAPHY",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "77067",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "77065",
+                                "confidence": 1
+                            }
+                        ]
+                    },
+                    {
+                        "groupID": "LOINC-MAMMOGRAPHY",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "24604-1",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "24605-8",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-sexual-health-treatment",
+                "category": "WOMEN-SEXUAL-HEALTH",
+                "purpose": "TREATMENT",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "SEXUAL",
+                    "display": "Sexual Health"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "SEXUAL",
+                        "display": "sexual health information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-CONSENT-REQUIRED-REPRODUCTIVE"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "LOINC-STI-TESTING",
+                        "codes": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "45075-7",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "45076-5",
+                                "confidence": 1
+                            },
+                            {
+                                "system": "http://loinc.org",
+                                "code": "45077-3",
+                                "confidence": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "binding-women-gender-affirming-consent-required",
+                "category": "WOMEN-GENDER-AFFIRMING",
+                "purpose": "CONSENT-REQUIRED",
+                "basis": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "GENDER",
+                    "display": "Gender-Affirming Care"
+                },
+                "labels": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                        "code": "GENDER",
+                        "display": "gender-affirming care information sensitivity"
+                    }
+                ],
+                "policies": [
+                    "POLICY-GENDER-AFFIRMING-PRIVACY",
+                    "POLICY-CONSENT-REQUIRED-REPRODUCTIVE",
+                    "POLICY-CROSS-STATE-PROTECTION"
+                ],
+                "codeSets": [
+                    {
+                        "groupID": "CPT-GENDER-AFFIRMING",
+                        "codes": [
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "19303",
+                                "confidence": 0.5
+                            },
+                            {
+                                "system": "http://www.ama-assn.org/go/cpt",
+                                "code": "19304",
+                                "confidence": 0.5
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+
