@@ -1,6 +1,6 @@
 {
   "name": "@complylight/core",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "ComplyLight common class and CLI utility library.",
   "type": "module",
   "main": "./build/src/index.js",
@@ -16,8 +16,9 @@
   "scripts": {
     "clean": "rm -rf ./build",
     "compile": "npx tsc",
-    "copy-files": "mkdir -p build/assets && cp -R src/assets/ build/src/assets/",
+    "copy-files": "mkdir -p build/src/assets && cp -R src/assets/* build/src/assets/",
     "build": "npm run clean && npm run compile && npm run copy-files",
+    "validate-modules": "tsx scripts/validate-modules.ts",
     "package": "npm run build && npm pack",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test-watch": "nodemon --watch '{src,test}/**' --ext 'ts,md,json' --exec 'npx jest'"
@@ -45,6 +46,7 @@
   "homepage": "https://github.com/complylight/core#readme",
   "dependencies": {
     "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "fast-xml-parser": "^5.3.3",
     "jsonpath-plus": "^10.3.0",
     "uuid": "^13.0.0"
@@ -56,6 +58,7 @@
     "nodemon": "^3.1.11",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

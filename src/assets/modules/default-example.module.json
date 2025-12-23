@@ -13506,7 +13506,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-bh",
@@ -13555,7 +13556,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-demo",
@@ -13594,7 +13596,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-dia",
@@ -13643,7 +13646,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-dis",
@@ -13687,7 +13691,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-gdis",
@@ -13716,7 +13721,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-disease",
@@ -13745,7 +13751,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-drgis",
@@ -13794,7 +13801,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-sex",
@@ -13828,7 +13836,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-social",
@@ -13862,7 +13871,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             },
             {
                 "id": "leap-rule-violence",
@@ -13906,7 +13916,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "policies": []
             }
         ]
     }
